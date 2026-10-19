@@ -1,0 +1,5 @@
+.date-picker { text-align: center; font-size: 30rpx; color: #e63b2e; font-weight: 600; }
+.row { display: flex; justify-content: space-between; align-items: center; padding: 16rpx 0; border-bottom: 1rpx solid #f5f5f5; }
+.row:last-child { border-bottom: none; }
+.row-title { flex: 1; margin-right: 16rpx; font-size: 28rpx; }
+.empty-mini { text-align: center; color: #bbb; font-size: 26rpx; padding: 24rpx 0; }

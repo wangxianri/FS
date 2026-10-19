@@ -1,0 +1,32 @@
+<view class="forgot-page">
+  <view class="title">🔑 {{txt.forgotPassword}}</view>
+  <view class="use-tip">{{txt.phoneUseTip}}</view>
+  <view class="form">
+    <view class="form-item">
+      <input class="input" type="number" maxlength="11" placeholder="{{txt.pleaseEnterPhone}}" bindinput="onPhone" />
+    </view>
+    <view class="form-item code-row">
+      <input class="input" placeholder="{{txt.pleaseEnterCode}}" bindinput="onCode" />
+      <view class="btn-code {{countdown ? 'disabled' : ''}}" bindtap="sendCode">{{countdown ? countdown + 's' : txt.getCode}}</view>
+    </view>
+    <view class="form-item">
+      <input class="input" password placeholder="{{txt.newPassword}}" bindinput="onNew" />
+    </view>
+    <view class="form-item">
+      <input class="input" password placeholder="{{txt.confirmPassword}}" bindinput="onConfirm" />
+    </view>
+    <view class="agree-row">
+      <view class="agree-box {{agreed ? 'on' : ''}}" bindtap="toggleAgree">
+        <text wx:if="{{agreed}}">✓</text>
+      </view>
+      <view class="agree-txt">
+        我已阅读并同意
+        <text class="agree-link" catchtap="goAgreement">《用户协议》</text>
+        与
+        <text class="agree-link" catchtap="goPrivacy">《隐私政策》</text>
+      </view>
+    </view>
+
+    <view class="btn-primary {{loading ? 'disabled' : ''}}" bindtap="onSubmit">{{loading ? txt.loading : txt.confirm}}</view>
+  </view>
+</view>

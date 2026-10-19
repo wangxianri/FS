@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="alternate icon" type="image/png" sizes="512x512" href="./favicon-512.png">
+<title>消防履责助手软件 · 管理后台</title>
+<style>
+  :root {
+    --primary:#d3232a; --primary-dark:#b01c22; --bg:#f4f6f9; --card:#fff;
+    --text:#1f2329; --muted:#8a919f; --border:#e5e8ee; --ok:#16a34a; --warn:#d97706;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); }
+  a { text-decoration:none; color:inherit; }
+  button { cursor:pointer; border:none; font-family:inherit; }
+
+  /* 登录页 */
+  #login { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+    background:radial-gradient(ellipse at 30% 20%, #5a1013 0%, transparent 55%),
+               radial-gradient(ellipse at 80% 80%, #3a0a0d 0%, transparent 50%),
+               linear-gradient(135deg, #1c0506 0%, #4a1013 45%, #7c0d12 100%); }
+  .login-wrap { display:flex; width:920px; max-width:96vw; min-height:540px; border-radius:20px; overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.5); }
+  .login-brand { flex:1.1; background:linear-gradient(160deg, rgba(255,61,0,.12), rgba(0,0,0,.28)), linear-gradient(150deg,#c81e1e 0%,#8f1215 100%);
+    display:flex; align-items:center; justify-content:center; padding:48px 40px; position:relative; overflow:hidden; }
+  .login-brand::before { content:''; position:absolute; right:-80px; bottom:-80px; width:260px; height:260px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,138,0,.35), transparent 70%); }
+  .login-brand::after { content:''; position:absolute; left:-60px; top:-60px; width:180px; height:180px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,210,0,.18), transparent 70%); }
+  .login-brand-inner { position:relative; z-index:1; color:#fff; }
+  .login-fire-icon { filter:drop-shadow(0 8px 20px rgba(255,100,0,.5)); margin-bottom:22px; }
+  .login-title { font-size:28px; font-weight:700; letter-spacing:1px; }
+  .login-slogan { font-size:14px; color:rgba(255,255,255,.82); margin-top:12px; letter-spacing:.5px; }
+  .login-features { margin-top:34px; display:flex; flex-direction:column; gap:13px; }
+  .login-feature { font-size:13px; color:rgba(255,255,255,.92); }
+  .login-feature i { display:inline-flex; width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.22);
+    align-items:center; justify-content:center; font-style:normal; font-size:12px; margin-right:9px; }
+
+  .login-form { flex:1; background:#fff; display:flex; align-items:center; justify-content:center; padding:48px 44px; }
+  .login-form-inner { width:100%; max-width:320px; }
+  .login-form-title { font-size:26px; font-weight:700; color:#1f2329; }
+  .login-form-sub { font-size:13px; color:#8a919f; margin-top:8px; margin-bottom:34px; }
+  .login-form .field { margin-bottom:20px; }
+  .login-form label { display:block; font-size:13px; color:#475569; margin-bottom:8px; font-weight:500; }
+  .input-wrap { display:flex; align-items:center; border:1px solid #e5e8ee; border-radius:10px; padding:0 12px; height:46px; transition:border-color .2s, box-shadow .2s; }
+  .input-wrap:focus-within { border-color:#d3232a; box-shadow:0 0 0 3px rgba(211,35,42,.1); }
+  .input-ico { font-size:16px; margin-right:8px; }
+  .input-wrap input { flex:1; border:none; outline:none; font-size:14px; height:100%; background:transparent; }
+  .btn-primary { width:100%; height:46px; border-radius:10px; background:linear-gradient(135deg,#e6393c,#c81e1e); color:#fff; font-size:15px; font-weight:600; letter-spacing:2px; box-shadow:0 8px 20px rgba(200,30,30,.35); transition:transform .15s, box-shadow .2s; }
+  .btn-primary:hover { transform:translateY(-1px); box-shadow:0 12px 26px rgba(200,30,30,.45); }
+  .login-err { color:#d3232a; font-size:13px; margin-top:14px; min-height:18px; text-align:center; }
+  .login-foot-note { text-align:center; color:#c0c5ce; font-size:12px; margin-top:26px; letter-spacing:2px; }
+
+  @media (max-width:720px) {
+    .login-wrap { flex-direction:column; }
+    .login-brand { display:none; }
+    .login-form { padding:40px 28px; }
+  }
+
+  /* 布局 */
+  #app { display:none; min-height:100vh; }
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:224px; background:#20242c; color:#cfd4dc; display:flex; flex-direction:column; }
+  .brand { padding:20px 18px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .brand .logo { font-size:16px; color:#fff; font-weight:600; }
+  .brand .logo b { color:#ff6b6b; }
+  .brand .tag { font-size:12px; color:var(--muted); margin-top:2px; }
+  .nav { flex:1; padding:10px 0; overflow-y:auto; }
+  .nav-section { font-size:11px; color:#5c6370; padding:12px 20px 4px; letter-spacing:1px; }
+  .nav-item { padding:11px 20px; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:9px; transition:background .15s; }
+  .nav-item:hover { background:rgba(255,255,255,.06); color:#fff; }
+  .nav-item.active { background:rgba(211,35,42,.22); color:#ff8a8a; border-left:3px solid var(--primary); }
+  .nav-item .ico { width:20px; text-align:center; }
+  .sidebar-foot { padding:14px 18px; border-top:1px solid rgba(255,255,255,.08); font-size:13px; }
+  .sidebar-foot .who { margin-bottom:8px; }
+
+  .main { margin-left:224px; padding:22px 28px; }
+  .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .topbar h2 { font-size:20px; }
+  .topbar .actions { display:flex; gap:10px; }
+  .btn { height:36px; padding:0 16px; border-radius:7px; font-size:13px; display:inline-flex; align-items:center; gap:4px; }
+  .btn-primary { background:var(--primary); color:#fff; }
+  .btn-primary:hover { background:var(--primary-dark); }
+  .btn-ghost { background:#fff; border:1px solid var(--border); color:var(--text); }
+  .btn-ghost:hover { background:#f0f2f5; }
+  .btn-danger { background:#fff; border:1px solid #fca5a5; color:var(--primary); }
+  .btn-danger:hover { background:#fef2f2; }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:22px; }
+  .stat { background:var(--card); border-radius:10px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+  .stat .num { font-size:30px; font-weight:700; }
+  .stat .lbl { color:var(--muted); font-size:13px; margin-top:4px; }
+  .stat.red .num{color:var(--primary);} .stat.green .num{color:var(--ok);} .stat.orange .num{color:var(--warn);}
+
+  .panel { background:var(--card); border-radius:10px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.05); margin-bottom:22px; }
+  .panel h3 { font-size:15px; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .panel h3 .dot { width:4px; height:14px; border-radius:2px; background:var(--primary); }
+
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { text-align:left; padding:11px 10px; border-bottom:1px solid var(--border); }
+  th { color:var(--muted); font-weight:500; background:#fafbfc; font-size:12px; white-space:nowrap; }
+  tr:hover td { background:#fafbfc; }
+  td { vertical-align:top; word-break:break-word; }
+  .badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:12px; white-space:nowrap; }
+  .b-role { background:#eef2ff; color:#4f46e5; }
+  .b-green { background:#ecfdf5; color:#16a34a; }
+  .b-red { background:#fef2f2; color:var(--primary); }
+  .b-orange { background:#fffbeb; color:var(--warn); }
+  .b-gray { background:#f1f2f4; color:#6b7280; }
+  .b-blue { background:#eff6ff; color:#2563eb; }
+  .link-btn { color:var(--primary); cursor:pointer; margin-right:12px; font-size:12px; white-space:nowrap; }
+  .link-btn.gray { color:var(--muted); }
+
+  .toolbar { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; align-items:center; }
+  .toolbar input, .toolbar select { height:34px; border:1px solid var(--border); border-radius:7px; padding:0 10px; font-size:13px; background:#fff; }
+  .toolbar input:focus, .toolbar select:focus { outline:none; border-color:var(--primary); }
+  .toolbar .spacer { flex:1; }
+
+  /* 健康分圆环 */
+  .ov-health-wrap { display:flex; gap:30px; align-items:center; flex-wrap:wrap; }
+  .ov-health-ring { position:relative; width:160px; height:160px; flex-shrink:0; }
+  .ov-health-ring .ov-health-num { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ov-health-ring .ov-health-num .big { font-size:42px; font-weight:700; color:#e72428; line-height:1; }
+  .ov-health-ring .ov-health-num .lbl { font-size:13px; color:var(--muted); margin-top:6px; }
+  .ov-health-info { flex:1; min-width:240px; }
+  .ov-health-info .title { font-size:18px; font-weight:600; margin-bottom:6px; }
+  .ov-health-info .desc { color:var(--muted); font-size:13px; margin-bottom:10px; }
+  .ov-health-info .meta { color:#475569; font-size:12px; line-height:1.7; }
+  .ov-health-info .meta b { color:#e72428; }
+
+  /* 履职看板 */
+  .ov-board-wrap { display:flex; gap:24px; flex-wrap:wrap; }
+  .ov-board-left { flex:1.2; min-width:340px; overflow-x:auto; }
+  .ov-board-right { flex:1; min-width:280px; }
+  .ov-trend { display:flex; align-items:flex-end; gap:8px; height:200px; padding:10px 6px 0; }
+  .ov-trend .col { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .ov-trend .bar { width:100%; max-width:34px; border-radius:4px 4px 0 0; background:linear-gradient(180deg,#e35b13,#e72428); position:relative; min-height:4px; }
+  .ov-trend .bar.good { background:linear-gradient(180deg,#22c55e,#16a34a); }
+  .ov-trend .bar.fair { background:linear-gradient(180deg,#eab308,#e35b13); }
+  .ov-trend .val { font-size:11px; color:#475569; margin-bottom:4px; font-weight:600; }
+  .ov-trend .wk { font-size:10px; color:var(--muted); margin-top:6px; white-space:nowrap; }
+  .rank-low { color:#e72428; font-weight:700; }
+
+  /* 可搜索下拉 */
+  .ss { position:relative; min-width:120px; }
+  .ss-display { height:34px; border:1px solid var(--border); border-radius:7px; padding:0 10px; font-size:13px; background:#fff; display:flex; align-items:center; justify-content:space-between; cursor:pointer; gap:6px; }
+  .ss-display:hover { border-color:var(--primary); }
+  .ss-text { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text); }
+  .ss-text.placeholder { color:var(--muted); }
+  .ss-arrow { color:var(--muted); font-size:11px; transition:transform .2s; }
+  .ss.open .ss-arrow { transform:rotate(180deg); }
+  .ss-panel { position:absolute; top:40px; left:0; z-index:200; background:#fff; border:1px solid var(--border); border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,.14); width:100%; min-width:220px; display:none; overflow:hidden; }
+  .ss.open .ss-panel { display:block; }
+  .ss-search { width:calc(100% - 16px); margin:8px; padding:6px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px; box-sizing:border-box; }
+  .ss-search:focus { outline:none; border-color:var(--primary); }
+  .ss-list { max-height:260px; overflow-y:auto; }
+  .ss-opt { padding:8px 12px; font-size:13px; cursor:pointer; color:var(--text); }
+  .ss-opt:hover { background:#f4f6f9; }
+  .ss-opt.on { color:var(--primary); font-weight:600; background:#fdf0f0; }
+  .ss-opt.empty { color:var(--muted); cursor:default; text-align:center; }
+
+  /* 弹窗 */
+  .modal-mask { position:fixed; inset:0; background:rgba(0,0,0,.4); display:none; align-items:center; justify-content:center; z-index:50; }
+  .modal-mask.show { display:flex; }
+  .modal { background:#fff; border-radius:12px; width:480px; max-width:94vw; max-height:90vh; overflow:auto; padding:24px; }
+  .modal.wide { width:640px; }
+  .modal h3 { font-size:16px; margin-bottom:18px; }
+  .modal .field { margin-bottom:14px; }
+  .modal label { display:block; font-size:13px; color:var(--muted); margin-bottom:5px; }
+  .modal input, .modal select, .modal textarea { width:100%; border:1px solid var(--border); border-radius:7px; padding:9px 10px; font-size:13px; font-family:inherit; }
+  .modal textarea { min-height:70px; resize:vertical; }
+  .modal .row { display:flex; gap:12px; }
+  .modal .row .field { flex:1; }
+  .modal-foot { display:flex; justify-content:flex-end; gap:10px; margin-top:8px; }
+  .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#111827; color:#fff; padding:10px 22px; border-radius:8px; font-size:14px; opacity:0; transition:opacity .25s; z-index:99; }
+  .toast.show { opacity:1; }
+  .empty { text-align:center; color:var(--muted); padding:30px 0; font-size:13px; }
+  .img-thumb { width:72px; height:72px; object-fit:cover; border-radius:6px; border:1px solid var(--border); cursor:pointer; }
+  .mini-table td, .mini-table th { padding:6px 8px; }
+</style>
+</head>
+<body>
+
+<!-- 登录页 -->
+<div id="login">
+  <div class="login-wrap">
+    <!-- 左侧品牌区 -->
+    <div class="login-brand">
+      <div class="login-brand-inner">
+        <svg class="login-fire-icon" viewBox="0 0 48 48" width="72" height="72" aria-hidden="true">
+          <defs>
+            <linearGradient id="fireG" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#ffd200"/>
+              <stop offset="0.5" stop-color="#ff8a00"/>
+              <stop offset="1" stop-color="#ff3d00"/>
+            </linearGradient>
+          </defs>
+          <path d="M24 4c2 6-2 8-2 12 0 4 4 6 4 10 0 6-4 8-8 8-8 0-12-4-12-10 0-4 2-6 4-8 0 4 2 6 4 6-2-8 4-12 10-18z" fill="url(#fireG)"/>
+        </svg>
+        <div class="login-title">消防履责助手软件</div>
+        <div class="login-slogan">让消防履职「照着做就合规」</div>
+        <div class="login-features">
+          <span class="login-feature"><i>✓</i>检查项自动排程</span>
+          <span class="login-feature"><i>✓</i>隐患闭环管理</span>
+          <span class="login-feature"><i>✓</i>履职健康评分</span>
+        </div>
+      </div>
+    </div>
+    <!-- 右侧登录表单 -->
+    <div class="login-form">
+      <div class="login-form-inner">
+        <div class="login-form-head">
+          <div class="login-form-title">欢迎登录</div>
+          <div class="login-form-sub">消防履责助手软件</div>
+        </div>
+        <div class="field">
+          <label>手机号</label>
+          <div class="input-wrap"><span class="input-ico">📱</span><input id="loginPhone" type="tel" maxlength="11" placeholder="请输入管理员手机号"></div>
+        </div>
+        <div class="field">
+          <label>密码</label>
+          <div class="input-wrap"><span class="input-ico">🔒</span><input id="loginPwd" type="password" placeholder="请输入密码" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        </div>
+        <button class="btn-primary" onclick="doLogin()">登 录</button>
+        <div class="login-err" id="loginErr"></div>
+        <div class="login-foot-note">安全 · 合规 · 可追溯</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 主界面 -->
+<div id="app">
+  <div class="sidebar">
+    <div class="brand"><div class="logo">消防履责助手<b>软件</b></div></div>
+    <div class="nav" id="nav">
+      <div class="nav-section">运营总览</div>
+      <div class="nav-item active" data-view="overview" onclick="switchView('overview')"><span class="ico">📊</span>数据总览</div>
+      <div class="nav-item" data-view="report" onclick="switchView('report')"><span class="ico">📅</span>日报统计</div>
+
+      <div class="nav-section">组织架构</div>
+      <div class="nav-item" data-view="units" onclick="switchView('units')"><span class="ico">🏢</span>单位管理</div>
+      <div class="nav-item" data-view="buildings" onclick="switchView('buildings')"><span class="ico">🏬</span>楼宇管理</div>
+      <div class="nav-item" data-view="places" onclick="switchView('places')"><span class="ico">📍</span>场所管理</div>
+
+      <div class="nav-section">标准与法规</div>
+      <div class="nav-item" data-view="checkitems" onclick="switchView('checkitems')"><span class="ico">📋</span>检查标准</div>
+      <div class="nav-item" data-view="lawitems" onclick="switchView('lawitems')"><span class="ico">⚖️</span>法规库</div>
+
+      <div class="nav-section">业务管理</div>
+      <div class="nav-item" data-view="hazards" onclick="switchView('hazards')"><span class="ico">⚠️</span>隐患管理</div>
+      <div class="nav-item" data-view="supervise" onclick="switchView('supervise')"><span class="ico">🔔</span>隐患督办</div>
+      <div class="nav-item" data-view="repairs" onclick="switchView('repairs')"><span class="ico">🔧</span>维保报修</div>
+      <div class="nav-item" data-view="tasks" onclick="switchView('tasks')"><span class="ico">📋</span>任务管理</div>
+      <div class="nav-item" data-view="notices" onclick="switchView('notices')"><span class="ico">📣</span>任务下发</div>
+      <div class="nav-item" data-view="ledger" onclick="switchView('ledger')"><span class="ico">📒</span>消防台账</div>
+      <div class="nav-item" data-view="acceptance" onclick="switchView('acceptance')"><span class="ico">✅</span>验收管理</div>
+      <div class="nav-item" data-view="quiz" onclick="switchView('quiz')"><span class="ico">🎓</span>抽考记录</div>
+      <div class="nav-item" data-view="spot" onclick="switchView('spot')"><span class="ico">🔍</span>领导快检</div>
+      <div class="nav-item" data-view="profile" onclick="switchView('profile')"><span class="ico">📈</span>履职画像</div>
+      <div class="nav-item" data-view="photos" onclick="switchView('photos')"><span class="ico">🖼️</span>照片墙</div>
+
+      <div class="nav-section">系统</div>
+      <div class="nav-item" data-view="users" onclick="switchView('users')"><span class="ico">👤</span>账号管理</div>
+    </div>
+    <div class="sidebar-foot">
+      <div class="who" id="who"></div>
+      <button class="btn btn-ghost" style="width:100%" onclick="doLogout()">退出登录</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- 总览 -->
+    <div class="view" id="view-overview">
+      <div class="topbar"><h2>数据总览</h2><span style="color:var(--muted);font-size:13px">今日 <span id="ovToday"></span></span></div>
+      <div class="toolbar">
+        <span data-i18n="filterUnit" style="color:var(--muted);font-size:13px">单位</span>
+        <select id="ovUnit" style="min-width:160px" onchange="fillBldByUnit('ov');loadOverview()"><option value="">全部单位</option></select>
+        <span data-i18n="filterBuilding" style="color:var(--muted);font-size:13px">楼宇</span>
+        <select id="ovBld" style="min-width:160px" onchange="fillPlcByUnitBld('ov');loadOverview()"><option value="">全部楼宇</option></select>
+        <span data-i18n="filterPlace" style="color:var(--muted);font-size:13px">场所</span>
+        <select id="ovPlc" style="min-width:160px" onchange="loadOverview()"><option value="">全部场所</option></select>
+        <span class="spacer"></span>
+        <span id="ovScopeLabel" style="color:var(--muted);font-size:12px"></span>
+      </div>
+      <div class="cards" id="ovCards"></div>
+      <div class="panel ov-health-panel">
+        <h3><span class="dot"></span><span data-i18n="healthTitle">消防安全健康分</span></h3>
+        <div class="ov-health-wrap">
+          <div class="ov-health-ring" id="ovHealthRing">
+            <svg viewBox="0 0 120 120" width="160" height="160">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#eef0f3" stroke-width="10"/>
+              <circle id="ovHealthArc" cx="60" cy="60" r="50" fill="none" stroke="#e72428" stroke-width="10"
+                      stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314"
+                      transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="ov-health-num"><div class="big" id="ovHealthNum">0</div><div class="lbl" data-i18n="healthLbl" id="ovHealthLbl">健康分</div></div>
+          </div>
+          <div class="ov-health-info">
+            <div class="title" id="ovHealthTitle">消防安全形势严峻</div>
+            <div class="desc" data-i18n="healthDesc" id="ovHealthDesc">基于今日完成率与未闭环隐患综合计算</div>
+            <div class="meta" id="ovHealthMeta"></div>
+            <button class="btn btn-primary" id="ovRefreshBtn" style="margin-top:14px;background:#e35b13;border-color:#e35b13" data-i18n="healthRefresh" onclick="loadOverview()">刷新评分</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel"><h3><span class="dot"></span>隐患看板</h3><div id="ovBoard"></div></div>
+      <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))" id="ovArea"></div>
+      <div class="panel">
+        <h3><span class="dot"></span>履职看板（点位健康分排名 + 8 周趋势）</h3>
+        <div class="ov-board-wrap">
+          <div class="ov-board-left">
+            <table><thead><tr><th>排名</th><th>点位</th><th>健康分</th><th>完成率</th><th>未闭环</th><th>重大</th><th>超期</th></tr></thead><tbody id="ovRankBody"></tbody></table>
+          </div>
+          <div class="ov-board-right">
+            <div class="ov-trend" id="ovTrend"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 日报 -->
+    <div class="view" id="view-report" style="display:none">
+      <div class="topbar"><h2>日报统计</h2></div>
+      <div class="toolbar">
+        <input id="repDate" type="date" onchange="loadReport()">
+        <button class="btn btn-ghost" onclick="loadReport()">查询</button>
+      </div>
+      <div class="cards" id="repCards"></div>
+      <div class="panel"><h3><span class="dot"></span>当日新增隐患</h3><table><thead><tr><th>ID</th><th>标题</th><th>区域</th><th>等级</th><th>状态</th><th>上报人</th></tr></thead><tbody id="repHazBody"></tbody></table></div>
+      <div class="panel"><h3><span class="dot"></span>当日新增任务</h3><table><thead><tr><th>ID</th><th>名称</th><th>周期</th><th>区域</th><th>状态</th></tr></thead><tbody id="repTaskBody"></tbody></table></div>
+      <div class="panel" style="border-top:3px solid var(--primary)">
+        <h3><span class="dot"></span>月度报告（一键生成）</h3>
+        <div class="toolbar">
+          <input id="repMonth" type="month">
+          <button class="btn btn-primary" onclick="loadMonthlyReport()">生成月度报告</button>
+        </div>
+        <div id="monthlyReport"></div>
+      </div>
+    </div>
+
+    <!-- 单位 -->
+    <div class="view" id="view-units" style="display:none">
+      <div class="topbar"><h2>单位管理</h2><div class="actions"><button class="btn btn-primary" onclick="openUnitModal()">＋ 新增单位</button></div></div>
+      <div class="toolbar">
+        <input id="unitQ" placeholder="搜索单位名称/编码" onkeydown="if(event.key==='Enter')loadUnits()">
+        <button class="btn btn-ghost" onclick="loadUnits()">查询</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>单位名称</th><th>层级</th><th>上级单位</th><th>编码</th><th>联系人</th><th>电话</th><th>楼宇数</th><th>场所数</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="unitBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 楼宇 -->
+    <div class="view" id="view-buildings" style="display:none">
+      <div class="topbar"><h2>楼宇管理</h2><div class="actions"><button class="btn btn-primary" onclick="openBuildingModal()">＋ 新增楼宇</button></div></div>
+      <div class="toolbar">
+        <select id="bldUnit" onchange="loadBuildings()"><option value="">全部单位</option></select>
+        <input id="bldQ" placeholder="搜索楼宇名称/编码" onkeydown="if(event.key==='Enter')loadBuildings()">
+        <button class="btn btn-ghost" onclick="loadBuildings()">查询</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>楼宇名称</th><th>所属单位</th><th>编码</th><th>层数</th><th>地址</th><th>场所数</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="bldBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 场所 -->
+    <div class="view" id="view-places" style="display:none">
+      <div class="topbar"><h2>场所管理</h2><div class="actions"><button class="btn btn-primary" onclick="openPlaceModal()">＋ 新增场所</button></div></div>
+      <div class="toolbar">
+        <select id="plcUnit" onchange="loadPlaces()"><option value="">全部单位</option></select>
+        <select id="plcBld" onchange="loadPlaces()"><option value="">全部楼宇</option></select>
+        <input id="plcQ" placeholder="搜索场所名称" onkeydown="if(event.key==='Enter')loadPlaces()">
+        <button class="btn btn-ghost" onclick="loadPlaces()">查询</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>场所名称</th><th>所属单位</th><th>所属楼宇</th><th>编码</th><th>楼层</th><th>类型</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="plcBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 检查标准 -->
+    <div class="view" id="view-checkitems" style="display:none">
+      <div class="topbar"><h2>检查标准库</h2><div class="actions"><button class="btn btn-primary" onclick="openCheckItemModal()">＋ 新增检查项</button></div></div>
+      <div class="toolbar">
+        <input id="ciArea" placeholder="按部位/区域筛选" onkeydown="if(event.key==='Enter')loadCheckItems()">
+        <input id="ciQ" placeholder="搜索名称/标准" onkeydown="if(event.key==='Enter')loadCheckItems()">
+        <button class="btn btn-ghost" onclick="loadCheckItems()">查询</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>编码</th><th>检查项名称</th><th>部位</th><th>周期</th><th>等级</th><th>一票否决</th><th>整改期限</th><th>适用角色</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="ciBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 法规库 -->
+    <div class="view" id="view-lawitems" style="display:none">
+      <div class="topbar"><h2>法规对照库</h2><div class="actions"><button class="btn btn-primary" onclick="openLawItemModal()">＋ 新增法规</button></div></div>
+      <div class="toolbar">
+        <input id="lawArea" placeholder="按领域筛选" onkeydown="if(event.key==='Enter')loadLawItems()">
+        <input id="lawQ" placeholder="搜索名称/条文" onkeydown="if(event.key==='Enter')loadLawItems()">
+        <button class="btn btn-ghost" onclick="loadLawItems()">查询</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>领域</th><th>名称</th><th>类别</th><th>条文原文</th><th>处罚条款</th><th>操作</th></tr></thead>
+        <tbody id="lawBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 隐患 -->
+    <div class="view" id="view-hazards" style="display:none">
+      <div class="topbar"><h2>隐患管理</h2></div>
+      <div class="toolbar">
+        <select id="hazStatus" onchange="loadHazards()"><option value="">全部状态</option><option value="open">未整改</option><option value="rectifying">整改中</option><option value="rechecked">待复查</option><option value="closed">已闭环</option></select>
+        <select id="hazLevel" onchange="loadHazards()"><option value="">全部等级</option><option value="high">重大</option><option value="mid">较大</option><option value="low">一般</option></select>
+        <select id="hazUnit" onchange="fillBldByUnit('haz');loadHazards()"><option value="">全部单位</option></select>
+        <select id="hazBld" onchange="fillPlcByUnitBld('haz');loadHazards()"><option value="">全部楼宇</option></select>
+        <select id="hazPlc" onchange="loadHazards()"><option value="">全部场所</option></select>
+        <button class="btn btn-ghost" onclick="loadHazards()">刷新</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>标题</th><th>所属</th><th>区域</th><th>等级</th><th>状态</th><th>上报人</th><th>整改期限</th><th>操作</th></tr></thead>
+        <tbody id="hazBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 督办 -->
+    <div class="view" id="view-supervise" style="display:none">
+      <div class="topbar"><h2>隐患督办</h2><button class="btn btn-ghost" onclick="loadSupervise()">刷新</button></div>
+      <div class="toolbar">
+        <select id="supStatus" onchange="loadSupervise()"><option value="">全部状态</option><option value="assigned">待整改</option><option value="in_progress">整改中</option><option value="done">已完成</option><option value="rejected">已驳回</option></select>
+        <select id="supUnit" onchange="fillBldByUnit('sup');loadSupervise()"><option value="">全部单位</option></select>
+        <select id="supBld" onchange="fillPlcByUnitBld('sup');loadSupervise()"><option value="">全部楼宇</option></select>
+        <select id="supPlc" onchange="loadSupervise()"><option value="">全部场所</option></select>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>关联隐患</th><th>所属</th><th>负责人</th><th>期限</th><th>备注</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
+        <tbody id="supBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 维保报修 -->
+    <div class="view" id="view-repairs" style="display:none">
+      <div class="topbar"><h2>维保报修</h2><div class="actions"><button class="btn btn-primary" onclick="openRepairModal()">＋ 登记报修</button></div></div>
+      <div class="toolbar">
+        <select id="repStatus" onchange="loadRepairs()"><option value="">全部状态</option><option value="open">已登记</option><option value="repairing">维修中</option><option value="checking">待验收</option><option value="closed">已闭环</option></select>
+        <select id="repUnit" onchange="fillBldByUnit('rep');loadRepairs()"><option value="">全部单位</option></select>
+        <button class="btn btn-ghost" onclick="loadRepairs()">刷新</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>编号</th><th>设备</th><th>位置</th><th>所属</th><th>故障描述</th><th>状态</th><th>期限</th><th>上报人</th><th>操作</th></tr></thead>
+        <tbody id="repBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 任务 -->
+    <div class="view" id="view-tasks" style="display:none">
+      <div class="topbar"><h2>任务管理</h2><button class="btn btn-ghost" onclick="loadTasks()">刷新</button></div>
+      <div class="toolbar">
+        <select id="taskStatus" onchange="loadTasks()"><option value="">全部状态</option><option value="pending">待完成</option><option value="done">已完成</option><option value="rectifying">整改中</option></select>
+        <select id="taskPeriod" onchange="loadTasks()"><option value="">全部周期</option><option value="twohour">每2小时</option><option value="shift">当班</option><option value="daily">每日</option><option value="weekly">每周</option><option value="monthly">每月</option><option value="quarterly">每季</option><option value="halfyear">每半年</option><option value="yearly">每年</option><option value="ondemand">专项</option></select>
+        <select id="taskUnit" onchange="fillBldByUnit('task');loadTasks()"><option value="">全部单位</option></select>
+        <select id="taskBld" onchange="fillPlcByUnitBld('task');loadTasks()"><option value="">全部楼宇</option></select>
+        <select id="taskPlc" onchange="loadTasks()"><option value="">全部场所</option></select>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>任务编号</th><th>名称</th><th>周期</th><th>所属</th><th>区域</th><th>状态</th><th>分数</th><th>应做日期</th></tr></thead>
+        <tbody id="taskBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 任务下发 -->
+    <div class="view" id="view-notices" style="display:none">
+      <div class="topbar"><h2>任务下发</h2><div class="actions"><button class="btn btn-primary" onclick="openNoticeModal()">＋ 下发任务</button></div></div>
+      <div class="toolbar">
+        <select id="ntStatus" onchange="loadNotices()"><option value="">全部状态</option><option value="active">进行中</option><option value="done">已完成</option><option value="cancelled">已取消</option></select>
+        <button class="btn btn-ghost" onclick="loadNotices()">刷新</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>标题</th><th>下发范围</th><th>内容</th><th>期限</th><th>状态</th><th>下发人</th><th>时间</th><th>操作</th></tr></thead>
+        <tbody id="ntBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 台账 -->
+    <div class="view" id="view-ledger" style="display:none">
+      <div class="topbar"><h2>消防台账</h2><button class="btn btn-ghost" onclick="loadLedger()">刷新</button></div>
+      <div class="toolbar">
+        <input id="ledQ" placeholder="搜索标题/内容" onkeydown="if(event.key==='Enter')loadLedger()">
+        <select id="ledType" onchange="loadLedger()"><option value="">全部类型</option></select>
+        <select id="ledUnit" onchange="fillBldByUnit('led');loadLedger()"><option value="">全部单位</option></select>
+        <select id="ledBld" onchange="fillPlcByUnitBld('led');loadLedger()"><option value="">全部楼宇</option></select>
+        <select id="ledPlc" onchange="loadLedger()"><option value="">全部场所</option></select>
+        <button class="btn btn-ghost" onclick="loadLedger()">查询</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>类型</th><th>标题</th><th>所属</th><th>内容</th><th>记录人</th><th>时间</th><th>操作</th></tr></thead>
+        <tbody id="ledBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 验收 -->
+    <div class="view" id="view-acceptance" style="display:none">
+      <div class="topbar"><h2>消防验收</h2><button class="btn btn-ghost" onclick="loadAcceptance()">刷新</button></div>
+      <div class="toolbar">
+        <input id="accQ" placeholder="搜索项目/备注" onkeydown="if(event.key==='Enter')loadAcceptance()">
+        <select id="accUnit" onchange="fillBldByUnit('acc');loadAcceptance()"><option value="">全部单位</option></select>
+        <select id="accBld" onchange="fillPlcByUnitBld('acc');loadAcceptance()"><option value="">全部楼宇</option></select>
+        <select id="accPlc" onchange="loadAcceptance()"><option value="">全部场所</option></select>
+        <button class="btn btn-ghost" onclick="loadAcceptance()">查询</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>项目</th><th>所属</th><th>结果</th><th>备注</th><th>经办人</th><th>时间</th><th>操作</th></tr></thead>
+        <tbody id="accBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 抽考 -->
+    <div class="view" id="view-quiz" style="display:none">
+      <div class="topbar"><h2>抽考记录</h2><button class="btn btn-ghost" onclick="loadQuiz()">刷新</button></div>
+      <div class="toolbar">
+        <select id="quizUnit" onchange="fillBldByUnit('quiz');loadQuiz()"><option value="">全部单位</option></select>
+        <select id="quizBld" onchange="fillPlcByUnitBld('quiz');loadQuiz()"><option value="">全部楼宇</option></select>
+        <select id="quizPlc" onchange="loadQuiz()"><option value="">全部场所</option></select>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>被考人员</th><th>所属</th><th>得分</th><th>满分</th><th>出题人</th><th>时间</th><th>答题详情</th></tr></thead>
+        <tbody id="quizBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 快检 -->
+    <div class="view" id="view-spot" style="display:none">
+      <div class="topbar"><h2>领导快检记录</h2><button class="btn btn-ghost" onclick="loadSpot()">刷新</button></div>
+      <div class="toolbar">
+        <select id="spotUnit" onchange="fillBldByUnit('spot');loadSpot()"><option value="">全部单位</option></select>
+        <select id="spotBld" onchange="fillPlcByUnitBld('spot');loadSpot()"><option value="">全部楼宇</option></select>
+        <select id="spotPlc" onchange="loadSpot()"><option value="">全部场所</option></select>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>模式</th><th>点位</th><th>所属</th><th>通过</th><th>未过</th><th>结论</th><th>执行人</th><th>时间</th></tr></thead>
+        <tbody id="spotBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 履职画像 -->
+    <div class="view" id="view-profile" style="display:none">
+      <div class="topbar"><h2>履职画像</h2></div>
+      <div class="toolbar">
+        <select id="pfUnit" onchange="loadProfile()"><option value="0">全部单位</option></select>
+        <button class="btn btn-ghost" onclick="loadProfile()">查询画像</button>
+      </div>
+      <div class="cards" id="pfCards"></div>
+      <div class="panel"><h3><span class="dot"></span>近 8 周任务完成率趋势</h3><div class="ov-trend" id="pfTrend" style="height:160px"></div></div>
+    </div>
+
+    <!-- 照片墙 -->
+    <div class="view" id="view-photos" style="display:none">
+      <div class="topbar"><h2>照片墙</h2><button class="btn btn-ghost" onclick="loadPhotos()">刷新</button></div>
+      <div class="toolbar">
+        <select id="phBizType" onchange="loadPhotos()"><option value="">全部类型</option><option value="hazard">隐患照片</option><option value="inspection">巡检照片</option></select>
+        <select id="phUnit" onchange="fillBldByUnit('ph');loadPhotos()"><option value="">全部单位</option></select>
+        <select id="phBld" onchange="fillPlcByUnitBld('ph');loadPhotos()"><option value="">全部楼宇</option></select>
+        <select id="phPlc" onchange="loadPhotos()"><option value="">全部场所</option></select>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>类型</th><th>关联ID</th><th>点位</th><th>所属</th><th>照片</th><th>说明</th><th>时间</th><th>操作</th></tr></thead>
+        <tbody id="phBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- 账号 -->
+    <div class="view" id="view-users" style="display:none">
+      <div class="topbar"><h2>账号管理</h2><div class="actions"><button class="btn btn-primary" onclick="openUserModal()">＋ 新增账号</button></div></div>
+      <div class="toolbar">
+        <input id="userQ" placeholder="搜索手机号/姓名" onkeydown="if(event.key==='Enter')loadUsers()">
+        <button class="btn btn-ghost" onclick="loadUsers()">查询</button>
+      </div>
+      <div class="panel"><table>
+        <thead><tr><th>ID</th><th>手机号</th><th>姓名</th><th>角色</th><th data-i18n="userUnit">单位</th><th>状态</th><th>最近登录</th><th>操作</th></tr></thead>
+        <tbody id="userBody"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- 单位弹窗 -->
+<div class="modal-mask" id="unitModal">
+  <div class="modal">
+    <h3 id="unitModalTitle">新增单位</h3>
+    <div class="field"><label>单位名称 *</label><input id="umName" placeholder="如：XX省公司"></div>
+    <div class="field"><label>上级单位 <span style="color:var(--muted);font-size:12px">（选上级后自动确定层级）</span></label><select id="umParent"><option value="0">无（顶级 = 省公司）</option></select></div>
+    <div class="row">
+      <div class="field"><label>单位编码</label><input id="umCode" placeholder="如：001"></div>
+      <div class="field"><label>联系人</label><input id="umContact"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>联系电话</label><input id="umPhone2"></div>
+      <div class="field"><label>排序</label><input id="umSort" type="number" value="0"></div>
+    </div>
+    <div class="field"><label>地址</label><input id="umAddr"></div>
+    <div class="field"><label>备注</label><textarea id="umRemark"></textarea></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('unitModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveUnit()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 楼宇弹窗 -->
+<div class="modal-mask" id="bldModal">
+  <div class="modal">
+    <h3 id="bldModalTitle">新增楼宇</h3>
+    <div class="field"><label>所属单位 *</label><select id="bmUnit"></select></div>
+    <div class="field"><label>楼宇名称 *</label><input id="bmName" placeholder="如：1号消防楼"></div>
+    <div class="row">
+      <div class="field"><label>楼宇编码</label><input id="bmCode"></div>
+      <div class="field"><label>层数</label><input id="bmFloors" type="number" value="0"></div>
+    </div>
+    <div class="field"><label>地址</label><input id="bmAddr"></div>
+    <div class="field"><label>备注</label><textarea id="bmRemark"></textarea></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('bldModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveBuilding()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 场所弹窗 -->
+<div class="modal-mask" id="plcModal">
+  <div class="modal">
+    <h3 id="plcModalTitle">新增场所</h3>
+    <div class="row">
+      <div class="field"><label>所属单位 *</label><select id="pmUnit" onchange="fillPmBld()"></select></div>
+      <div class="field"><label>所属楼宇 *</label><select id="pmBld"></select></div>
+    </div>
+    <div class="field"><label>场所名称 *</label><input id="pmName" placeholder="如：配电室"></div>
+    <div class="row">
+      <div class="field"><label>场所编码</label><input id="pmCode"></div>
+      <div class="field"><label>楼层</label><input id="pmFloor" placeholder="如：2F"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>类型</label><input id="pmType" placeholder="如：配电/仓储"></div>
+      <div class="field"><label>排序</label><input id="pmSort" type="number" value="0"></div>
+    </div>
+    <div class="field"><label>备注</label><textarea id="pmRemark"></textarea></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('plcModal')">取消</button>
+      <button class="btn btn-primary" onclick="savePlace()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 检查项弹窗 -->
+<div class="modal-mask" id="ciModal">
+  <div class="modal wide">
+    <h3 id="ciModalTitle">新增检查项</h3>
+    <div class="row">
+      <div class="field"><label>检查项名称 *</label><input id="ciName"></div>
+      <div class="field"><label>编码</label><input id="ciCode"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>部位/区域</label><input id="ciArea2"></div>
+      <div class="field"><label>周期</label><select id="ciPeriod">
+        <option value="twohour">每2小时</option><option value="shift">当班</option><option value="daily">每日</option>
+        <option value="weekly">每周</option><option value="monthly">每月</option><option value="quarterly">每季</option>
+        <option value="halfyear">每半年</option><option value="yearly">每年</option><option value="ondemand">专项</option>
+      </select></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>风险等级</label><select id="ciLevel">
+        <option value="high">重大</option><option value="mid">较大</option><option value="low">一般</option><option value="normal">正常</option>
+      </select></div>
+      <div class="field"><label>一票否决</label><select id="ciVeto"><option value="0">否</option><option value="1">是</option></select></div>
+      <div class="field"><label>整改期限(天)</label><input id="ciDays" type="number" value="3"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>适用角色</label><select id="ciRole">
+        <option value="grass">基层执行</option><option value="mid">中层管理</option><option value="top">领导检查</option>
+        <option value="accept">消防验收</option><option value="all">全部</option>
+      </select></div>
+      <div class="field"><label>排序</label><input id="ciSort" type="number" value="0"></div>
+    </div>
+    <div class="field"><label>怎么查</label><textarea id="ciHow"></textarea></div>
+    <div class="field"><label>合格标准</label><textarea id="ciStd"></textarea></div>
+    <div class="field"><label>法规依据</label><textarea id="ciBasis"></textarea></div>
+    <div class="field"><label>处罚条款</label><textarea id="ciPenalty"></textarea></div>
+    <div class="field"><label>整改措施</label><textarea id="ciFix"></textarea></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('ciModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveCheckItem()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 法规弹窗 -->
+<div class="modal-mask" id="lawModal">
+  <div class="modal wide">
+    <h3 id="lawModalTitle">新增法规</h3>
+    <div class="row">
+      <div class="field"><label>法规名称 *</label><input id="lmName"></div>
+      <div class="field"><label>领域</label><input id="lmArea"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>类别</label><select id="lmCategory">
+        <option value="法律">法律</option><option value="行政法规">行政法规</option><option value="部门规章">部门规章</option>
+        <option value="国家标准">国家标准</option><option value="行业标准">行业标准</option>
+      </select></div>
+      <div class="field"><label>排序</label><input id="lmSort" type="number" value="0"></div>
+    </div>
+    <div class="field"><label>条文原文</label><textarea id="lmBasis"></textarea></div>
+    <div class="field"><label>处罚条款</label><textarea id="lmPenalty"></textarea></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('lawModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveLawItem()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 新增账号弹窗 -->
+<div class="modal-mask" id="userModal">
+  <div class="modal">
+    <h3>新增账号</h3>
+    <div class="field"><label>手机号</label><input id="umPhone" type="tel" maxlength="11" placeholder="11 位手机号"></div>
+    <div class="field"><label>姓名</label><input id="umUserName" placeholder="姓名（可选，默认 用户+尾号）"></div>
+    <div class="field"><label>角色</label><select id="umRole" onchange="onUserRoleChange()"><option value="grass">基层执行</option><option value="mid">中层管理</option><option value="top">领导检查</option><option value="accept">消防验收</option><option value="admin">系统管理员</option></select></div>
+    <div class="field" id="umUnitField"><label><span data-i18n="userBelongUnit">所属单位</span> <span style="color:var(--primary)">*</span></label><select id="umUnit"><option value="" data-i18n="userSelectUnit">请选择单位</option></select></div>
+    <div class="field"><label>初始密码</label><input id="umPwd" value="Fw12345678"><div style="color:var(--muted);font-size:12px;margin-top:4px">需≥8位且含字母数字</div></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('userModal')">取消</button>
+      <button class="btn btn-primary" onclick="createUser()">创建</button>
+    </div>
+  </div>
+</div>
+
+<!-- 改单位弹窗（账号归属单位） -->
+<div class="modal-mask" id="userUnitModal">
+  <div class="modal">
+    <h3 data-i18n="userChangeUnitTitle">修改所属单位</h3>
+    <div class="field"><label data-i18n="userBelongUnit">所属单位</label><select id="umUnit2"><option value="">请选择单位</option></select></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('userUnitModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveUserUnit()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 改角色弹窗 -->
+<div class="modal-mask" id="roleModal">
+  <div class="modal">
+    <h3>修改角色</h3>
+    <div class="field"><label>角色</label><select id="rmRoleSel">
+      <option value="grass">基层执行</option>
+      <option value="mid">中层管理</option>
+      <option value="top">领导检查</option>
+      <option value="accept">消防验收</option>
+      <option value="admin">系统管理员</option>
+    </select></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('roleModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveRole()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 登记报修弹窗 -->
+<div class="modal-mask" id="repairModal">
+  <div class="modal">
+    <h3>登记报修</h3>
+    <div class="field"><label>设备名称 *</label><input id="rmDevice" placeholder="如：火灾报警控制器"></div>
+    <div class="field"><label>位置</label><input id="rmLocation" placeholder="如：1号楼消防控制室"></div>
+    <div class="field"><label>所属单位</label><select id="rmUnit"><option value="">请选择单位</option></select></div>
+    <div class="field"><label>故障描述</label><textarea id="rmFault" placeholder="描述故障现象"></textarea></div>
+    <div class="field"><label>处理期限</label><input id="rmDeadline" type="date"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('repairModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveRepair()">提交</button>
+    </div>
+  </div>
+</div>
+
+<!-- 任务下发弹窗 -->
+<div class="modal-mask" id="noticeModal">
+  <div class="modal">
+    <h3>下发专项任务</h3>
+    <div class="field"><label>任务标题 *</label><input id="nmTitle" placeholder="如：国庆节前消防安全专项检查"></div>
+    <div class="field"><label>下发范围</label><select id="nmUnit"><option value="0">全部单位</option></select></div>
+    <div class="field"><label>任务内容</label><textarea id="nmContent" placeholder="任务要求与检查要点"></textarea></div>
+    <div class="field"><label>完成期限</label><input id="nmDeadline" type="date"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('noticeModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveNotice()">下发</button>
+    </div>
+  </div>
+</div>
+
+<!-- 场所档案卡弹窗 -->
+<div class="modal-mask" id="placeCardModal">
+  <div class="modal" style="max-width:640px">
+    <h3>消防安全履职档案卡</h3>
+    <div id="placeCardBody" style="max-height:60vh;overflow-y:auto"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('placeCardModal')">关闭</button>
+      <button class="btn btn-primary" onclick="window.print()">打印</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var API = 'https://ryza.com.cn/api/fs';
+var TOKEN_KEY = 'fs_admin_token';
+var token = localStorage.getItem(TOKEN_KEY) || '';
+var roleNames = {grass:'基层执行', mid:'中层管理', top:'领导检查', accept:'消防验收', admin:'系统管理员'};
+var unitLevelNames = {1:'省公司', 2:'市公司', 3:'区县公司'};
+var statusNames = {open:'未整改', rectifying:'整改中', rechecked:'待复查', closed:'已闭环'};
+var levelNames = {high:'重大', mid:'较大', low:'一般'};
+var taskStatusNames = {pending:'待完成', done:'已完成', rectifying:'整改中'};
+var periodNames = {twohour:'每2小时', shift:'当班', daily:'每日', weekly:'每周', monthly:'每月', quarterly:'每季', halfyear:'每半年', yearly:'每年', ondemand:'专项'};
+var supStatusNames = {assigned:'待整改', in_progress:'整改中', done:'已完成', rejected:'已驳回'};
+var ledgerTypeNames = {inspection:'巡检记录', hazard:'隐患整改', equipment:'器材维保', drill:'演练记录', training:'培训记录', check:'检查记录', meeting:'会议记录', other:'其他'};
+var editingUnitId=0, editingBldId=0, editingPlcId=0, editingCiId=0, editingLawId=0;
+var unitOptions=[], bldOptions=[];
+
+// ---------- 多语言（仅覆盖本次新增的"数据总览健康分"模块，遵循项目 i18n 规范：camelCase key、三语保持一致） ----------
+var I18N_LANG = localStorage.getItem('fs_admin_lang') || 'zh-CN';
+var I18N = {
+  'zh-CN': {
+    filterUnit:'单位', filterBuilding:'楼宇', filterPlace:'场所',
+    scopeAll:'当前范围：全部', scopePrefix:'当前范围：',
+    healthTitle:'消防安全健康分', healthLbl:'健康分',
+    healthDesc:'基于今日完成率与未闭环隐患综合计算',
+    healthRefresh:'刷新评分',
+    healthMetaFmt:'今日任务完成率：{0}%　|　未闭环隐患：{1} 条　|　重大隐患：{2} 条　|　已超期：{3} 条',
+    statusExcellent:'消防安全形势良好', statusGood:'消防安全形势稳定',
+    statusFair:'消防安全形势一般', statusPoor:'消防安全形势严峻',
+    userUnit:'单位', userUnassigned:'未分配', userChangeUnit:'改单位',
+    userBelongUnit:'所属单位', userSelectUnit:'请选择单位',
+    userChangeUnitTitle:'修改所属单位', userSelectUnitRequired:'请为账号选择所属单位',
+    userUnitUpdated:'单位已更新',
+  },
+  'en-US': {
+    filterUnit:'Unit', filterBuilding:'Building', filterPlace:'Place',
+    scopeAll:'Scope: All', scopePrefix:'Scope: ',
+    healthTitle:'Fire Safety Health Score', healthLbl:'Score',
+    healthDesc:'Calculated from today\'s completion rate and unclosed hazards',
+    healthRefresh:'Refresh',
+    healthMetaFmt:'Today completion: {0}% | Open hazards: {1} | High hazards: {2} | Overdue: {3}',
+    statusExcellent:'Fire safety situation: Excellent',
+    statusGood:'Fire safety situation: Stable',
+    statusFair:'Fire safety situation: Fair',
+    statusPoor:'Fire safety situation: Severe',
+    userUnit:'Unit', userUnassigned:'Unassigned', userChangeUnit:'Change unit',
+    userBelongUnit:'Unit', userSelectUnit:'Select unit',
+    userChangeUnitTitle:'Change unit', userSelectUnitRequired:'Please select a unit for this account',
+    userUnitUpdated:'Unit updated',
+  },
+  'zh-TW': {
+    filterUnit:'單位', filterBuilding:'樓宇', filterPlace:'場所',
+    scopeAll:'當前範圍：全部', scopePrefix:'當前範圍：',
+    healthTitle:'消防安全健康分', healthLbl:'健康分',
+    healthDesc:'基於今日完成率與未閉環隱患綜合計算',
+    healthRefresh:'刷新評分',
+    healthMetaFmt:'今日任務完成率：{0}%　|　未閉環隱患：{1} 條　|　重大隱患：{2} 條　|　已超期：{3} 條',
+    statusExcellent:'消防安全形勢良好', statusGood:'消防安全形勢穩定',
+    statusFair:'消防安全形勢一般', statusPoor:'消防安全形勢嚴峻',
+    userUnit:'單位', userUnassigned:'未分配', userChangeUnit:'改單位',
+    userBelongUnit:'所屬單位', userSelectUnit:'請選擇單位',
+    userChangeUnitTitle:'修改所屬單位', userSelectUnitRequired:'請為帳號選擇所屬單位',
+    userUnitUpdated:'單位已更新',
+  }
+};
+function t(key){
+  var pack = I18N[I18N_LANG] || I18N['zh-CN'];
+  return pack[key] || key;
+}
+function tFmt(key){
+  var args = Array.prototype.slice.call(arguments, 1);
+  var s = t(key);
+  return s.replace(/\{(\d+)\}/g, function(_, i){ return args[+i] != null ? args[+i] : ''; });
+}
+function setLang(l){
+  I18N_LANG = l;
+  localStorage.setItem('fs_admin_lang', l);
+  applyI18n();
+  if (typeof loadOverview === 'function') loadOverview();
+}
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+}
+
+// ---------- 通用 ----------
+function $(id){ return document.getElementById(id); }
+function toast(msg){ var t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},2200); }
+function setToken(t){ token=t; if(t) localStorage.setItem(TOKEN_KEY,t); else localStorage.removeItem(TOKEN_KEY); }
+function esc(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ---------- 可搜索下拉组件（把所有 select 增强为支持搜索） ----------
+function ssBuild(sel){
+  if(!sel || sel.dataset.ss) return;
+  sel.dataset.ss = '1';
+  sel.style.display = 'none';
+  var wrap = document.createElement('div');
+  wrap.className = 'ss';
+  wrap.dataset.for = sel.id;
+  if(sel.style.minWidth) wrap.style.minWidth = sel.style.minWidth;
+  if(sel.style.width) wrap.style.width = sel.style.width;
+  var display = document.createElement('div');
+  display.className = 'ss-display';
+  display.innerHTML = '<span class="ss-text"></span><span class="ss-arrow">▼</span>';
+  display.onclick = function(e){ e.stopPropagation(); ssToggle(sel.id); };
+  wrap.appendChild(display);
+  var panel = document.createElement('div');
+  panel.className = 'ss-panel';
+  var input = document.createElement('input');
+  input.className = 'ss-search';
+  input.placeholder = '搜索...';
+  input.oninput = function(){ ssRender(sel, input.value); };
+  input.onclick = function(e){ e.stopPropagation(); };
+  panel.appendChild(input);
+  var list = document.createElement('div');
+  list.className = 'ss-list';
+  panel.appendChild(list);
+  panel.onclick = function(e){ e.stopPropagation(); };
+  wrap.appendChild(panel);
+  sel.parentNode.insertBefore(wrap, sel.nextSibling);
+  ssRender(sel, '');
+}
+function ssToggle(id){
+  var wrap = document.querySelector('.ss[data-for="'+id+'"]');
+  if(!wrap) return;
+  var wasOpen = wrap.classList.contains('open');
+  document.querySelectorAll('.ss.open').forEach(function(w){ w.classList.remove('open'); });
+  if(!wasOpen){
+    wrap.classList.add('open');
+    var inp = wrap.querySelector('.ss-search');
+    if(inp){ inp.value=''; ssRender(document.getElementById(id), ''); setTimeout(function(){ inp.focus(); }, 0); }
+  }
+}
+function ssRender(sel, kw){
+  var wrap = document.querySelector('.ss[data-for="'+sel.id+'"]');
+  if(!wrap) return;
+  var text = wrap.querySelector('.ss-text');
+  var selOpt = sel.options[sel.selectedIndex];
+  text.textContent = selOpt ? selOpt.textContent : '';
+  text.classList.toggle('placeholder', !selOpt || selOpt.value==='');
+  var list = wrap.querySelector('.ss-list');
+  var html = '';
+  var matched = 0;
+  kw = (kw||'').toLowerCase();
+  for(var i=0;i<sel.options.length;i++){
+    var opt = sel.options[i];
+    if(kw && opt.textContent.toLowerCase().indexOf(kw) < 0) continue;
+    matched++;
+    html += '<div class="ss-opt'+(i===sel.selectedIndex?' on':'')+'" data-val="'+esc(opt.value)+'" data-idx="'+i+'">'+esc(opt.textContent)+'</div>';
+  }
+  list.innerHTML = html || '<div class="ss-opt empty">无匹配项</div>';
+  list.querySelectorAll('.ss-opt[data-idx]').forEach(function(o){
+    o.onclick = function(){
+      sel.selectedIndex = parseInt(o.dataset.idx, 10);
+      sel.value = o.dataset.val;
+      var ev = document.createEvent('HTMLEvents');
+      ev.initEvent('change', true, false);
+      sel.dispatchEvent(ev);
+      ssRender(sel, '');
+      var w = document.querySelector('.ss[data-for="'+sel.id+'"]');
+      if(w) w.classList.remove('open');
+    };
+  });
+}
+function ssInit(){
+  document.querySelectorAll('select').forEach(function(sel){ ssBuild(sel); });
+}
+function ssRefresh(sel){
+  if(sel && sel.dataset.ss) ssRender(sel, '');
+}
+// 点击页面任意处关闭下拉
+document.addEventListener('click', function(){ document.querySelectorAll('.ss.open').forEach(function(w){ w.classList.remove('open'); }); });
+
+function req(method, url, body){
+  return new Promise(function(resolve,reject){
+    var xhr=new XMLHttpRequest();
+    xhr.open(method, API+url, true);
+    xhr.setRequestHeader('Content-Type','application/json');
+    if(token) xhr.setRequestHeader('Authorization','Bearer '+token);
+    xhr.onreadystatechange=function(){
+      if(xhr.readyState!==4) return;
+      var data;
+      try{ data=JSON.parse(xhr.responseText||'{}'); }catch(e){ data={code:xhr.status,message:xhr.statusText}; }
+      if(xhr.status===401){ setToken(''); showLogin(); toast('登录已过期，请重新登录'); reject(data); return; }
+      if(data && (data.code===200 || (data.code===undefined && xhr.status<400))){ resolve(data.data!==undefined?data.data:data); }
+      else { toast(data.message||'请求失败'); reject(data); }
+    };
+    xhr.onerror=function(){ toast('网络错误'); reject(); };
+    xhr.send(body?JSON.stringify(body):null);
+  });
+}
+function closeModal(id){ $(id).classList.remove('show'); }
+function openModal(id){ $(id).classList.add('show'); }
+
+// ---------- 登录 ----------
+function showLogin(){ $('login').style.display='flex'; $('app').style.display='none'; }
+function showApp(){ $('login').style.display='none'; $('app').style.display='block'; }
+
+function doLogin(){
+  var phone=$('loginPhone').value.trim(), pwd=$('loginPwd').value;
+  if(!phone||!pwd){ $('loginErr').textContent='请输入手机号和密码'; return; }
+  $('loginErr').textContent='登录中...';
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST', API+'/login', true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState!==4) return;
+    var data; try{ data=JSON.parse(xhr.responseText); }catch(e){ data={}; }
+    if(data.code===200){
+      var u=data.data.user;
+      if(u.role!=='admin'){ $('loginErr').textContent='该账号不是管理员，无权限访问后台'; return; }
+      setToken(data.data.accessToken);
+      loadMe(u);
+    } else { $('loginErr').textContent=(data.data&&data.data.needCaptcha)?'手机号或密码错误':'登录失败：'+(data.message||'未知错误'); }
+  };
+  xhr.send(JSON.stringify({phone:phone,password:pwd}));
+}
+
+function loadMe(u){
+  showApp();
+  $('who').textContent = (u?u.name:'')+'（'+roleNames[u?u.role:'']+'）';
+  loadOrgFilters();
+  switchView('overview');
+}
+function doLogout(){ setToken(''); showLogin(); }
+
+// ---------- 视图切换 ----------
+function switchView(v){
+  document.querySelectorAll('.nav-item').forEach(function(i){ i.classList.toggle('active', i.getAttribute('data-view')===v); });
+  var views=['overview','report','units','buildings','places','checkitems','lawitems','hazards','supervise','repairs','tasks','notices','ledger','acceptance','quiz','spot','profile','photos','users'];
+  views.forEach(function(x){ var el=$('view-'+x); if(el) el.style.display=(x===v)?'block':'none'; });
+  if(v==='overview') loadOverview();
+  if(v==='report'){ loadReport(); loadMonthlyReport(); }
+  if(v==='units') loadUnits();
+  if(v==='buildings') loadBuildings();
+  if(v==='places') loadPlaces();
+  if(v==='checkitems') loadCheckItems();
+  if(v==='lawitems') loadLawItems();
+  if(v==='hazards') loadHazards();
+  if(v==='supervise') loadSupervise();
+  if(v==='repairs') loadRepairs();
+  if(v==='tasks') loadTasks();
+  if(v==='notices') loadNotices();
+  if(v==='ledger') loadLedger();
+  if(v==='acceptance') loadAcceptance();
+  if(v==='quiz') loadQuiz();
+  if(v==='spot') loadSpot();
+  if(v==='profile') loadProfile();
+  if(v==='photos') loadPhotos();
+  if(v==='users'){ loadUsers(); loadUserUnitOptions(); }
+}
+
+// ---------- 总览 ----------
+function loadOverview(){
+  $('ovToday').textContent = new Date().toLocaleDateString('zh-CN');
+  // 读取当前单位/楼宇/场所
+  var u = $('ovUnit') ? $('ovUnit').value : '';
+  var b = $('ovBld') ? $('ovBld').value : '';
+  var p = $('ovPlc') ? $('ovPlc').value : '';
+  var qs = [];
+  if (u) qs.push('unitId=' + encodeURIComponent(u));
+  if (b) qs.push('buildingId=' + encodeURIComponent(b));
+  if (p) qs.push('placeId=' + encodeURIComponent(p));
+  var qstr = qs.length ? ('?' + qs.join('&')) : '';
+  // 同步给顶部"刷新评分"按钮和范围标签
+  if ($('ovScopeLabel')) {
+    var parts = [];
+    if (u) parts.push('Unit#' + u);
+    if (b) parts.push('Building#' + b);
+    if (p) parts.push('Place#' + p);
+    $('ovScopeLabel').textContent = parts.length ? (t('scopePrefix') + parts.join(' / ')) : t('scopeAll');
+  }
+  var homeUrl = '/home' + qstr;
+  Promise.all([ req('GET', homeUrl), req('GET','/hazards/board' + qstr).catch(function(){return null;}),
+                req('GET','/admin/board').catch(function(){return null;}) ])
+  .then(function(res){
+    var h=res[0], b=res[1]||{}, bd=res[2]||{};
+    var cards='';
+    cards+=stat('今日任务', (h.stats?h.stats.todayTasks:0), '');
+    cards+=stat('待完成', (h.stats?h.stats.pendingTasks:0), 'orange');
+    cards+=stat('未闭环隐患', (h.stats?h.stats.openHazards:0), 'red');
+    cards+=stat('重大隐患', (h.stats?h.stats.highHazards:0), 'red');
+    cards+=stat('已超期', (h.stats?h.stats.overdue:0), 'orange');
+    $('ovCards').innerHTML = cards;
+
+    // 健康分圆环渲染
+    var health = h.health || { score: 0, level: 'poor', status: '消防安全形势严峻', taskRate: 0 };
+    var score = Math.max(0, Math.min(100, health.score || 0));
+    $('ovHealthNum').textContent = score;
+    // 状态文案：优先使用后端返回的 status；如属于 excellent/good/fair/poor 四个等级 key 则查表
+    var statusMap = { excellent:'statusExcellent', good:'statusGood', fair:'statusFair', poor:'statusPoor' };
+    var statusKey = statusMap[health.level];
+    $('ovHealthTitle').textContent = statusKey ? t(statusKey) : (health.status || t('statusPoor'));
+    // 圆环动画（314 = 2πr, r=50）
+    var arc = $('ovHealthArc');
+    if (arc) {
+      var len = 314;
+      var offset = len * (1 - score / 100);
+      arc.setAttribute('stroke-dasharray', String(len));
+      arc.setAttribute('stroke-dashoffset', String(offset));
+      // 颜色按等级
+      var colorMap = { excellent: '#16a34a', good: '#22c55e', fair: '#eab308', poor: '#e72428' };
+      arc.setAttribute('stroke', colorMap[health.level] || '#e72428');
+      $('ovHealthNum').style.color = colorMap[health.level] || '#e72428';
+    }
+    $('ovHealthMeta').innerHTML = tFmt('healthMetaFmt',
+      health.taskRate || 0,
+      (h.stats ? h.stats.openHazards : 0),
+      (h.stats ? h.stats.highHazards : 0),
+      (h.stats ? h.stats.overdue : 0)
+    ).replace(/(今日任务完成率|今日任務完成率|Today completion)/g, '<b>$1</b>')
+     .replace(/(未闭环隐患|未閉環隱患|Open hazards)/g, '<b>$1</b>')
+     .replace(/(重大隐患|重大隱患|High hazards)/g, '<b>$1</b>')
+     .replace(/(已超期|Overdue)/g, '<b>$1</b>');
+
+    var rows=[
+      ['隐患总数', b.total||0],['未整改', b.open||0],['整改中', b.rectifying||0],
+      ['待复查', b.rechecked||0],['已闭环', b.closed||0],['重大', b.high||0],
+      ['较大', b.mid||0],['一般', b.low||0],['已超期', b.overdue||0]
+    ];
+    var tb='<table><thead><tr>'+rows.map(function(r){return '<th>'+r[0]+'</th>';}).join('')+'</tr></thead><tbody><tr>'+
+      rows.map(function(r){ return '<td style="font-size:22px;font-weight:700;color:'+(r[0].indexOf('重大')>=0||r[0].indexOf('超期')>=0?'var(--primary)':'var(--text)')+'">'+r[1]+'</td>'; }).join('')+'</tr></tbody></table>';
+    $('ovBoard').innerHTML=tb;
+    var areas=b.areas||{};
+    var ak=Object.keys(areas);
+    $('ovArea').innerHTML = ak.length? ak.map(function(a){
+      var it=areas[a];
+      return '<div class="stat"><div class="num" style="font-size:24px">'+it.total+'</div><div class="lbl">'+esc(a)+'（未闭环 '+it.open+'）</div></div>';
+    }).join('') : '<div class="stat"><div class="num" style="font-size:24px">0</div><div class="lbl">暂无区域数据</div></div>';
+
+    // 履职看板：点位排名 + 8 周趋势
+    var ranking = bd.ranking || [];
+    var rankTb = '';
+    ranking.forEach(function(r, i){
+      var low = r.score < 75;
+      rankTb += '<tr><td>'+(i+1)+'</td><td><b>'+esc(r.unit_name)+'</b></td>'+
+        '<td class="'+(low?'rank-low':'')+'">'+r.score+'</td>'+
+        '<td>'+r.taskRate+'%</td><td>'+r.openHazards+'</td><td>'+r.highHazards+'</td><td>'+r.overdue+'</td></tr>';
+    });
+    $('ovRankBody').innerHTML = rankTb || '<tr><td colspan="7" class="empty">暂无点位数据</td></tr>';
+
+    var trend = bd.trend || [];
+    var trendHtml = '';
+    trend.forEach(function(wk){
+      var sc = wk.score || 0;
+      var cls = sc >= 75 ? 'good' : (sc >= 60 ? 'fair' : '');
+      var hPx = Math.max(4, Math.round(sc * 1.6));
+      trendHtml += '<div class="col"><div class="val">'+sc+'</div>'+
+        '<div class="bar '+cls+'" style="height:'+hPx+'px" title="完成率 '+wk.taskRate+'%"></div>'+
+        '<div class="wk">'+(wk.week||'').slice(5)+'</div></div>';
+    });
+    $('ovTrend').innerHTML = trendHtml || '<div style="color:var(--muted);font-size:13px">暂无趋势数据</div>';
+  });
+}
+function stat(num,lbl,color){ return '<div class="stat '+(color?color:'')+'"><div class="num">'+num+'</div><div class="lbl">'+lbl+'</div></div>'; }
+
+// ---------- 日报 ----------
+function loadReport(){
+  if(!$('repDate').value) $('repDate').value = new Date().toISOString().slice(0,10);
+  var date=$('repDate').value;
+  req('GET','/admin/report?date='+date).then(function(d){
+    var cards='';
+    cards+=stat('新增任务', d.tasksCreated, '');
+    cards+=stat('完成任务', d.tasksDone, 'green');
+    cards+=stat('巡检次数', d.inspections, '');
+    cards+=stat('新增隐患', d.hazardsCreated, 'red');
+    cards+=stat('闭环隐患', d.hazardsClosed, 'green');
+    cards+=stat('新增台账', d.ledger, '');
+    cards+=stat('验收记录', d.acceptance, '');
+    cards+=stat('快检次数', d.spotChecks, '');
+    cards+=stat('抽考记录', d.quizRecords, '');
+    $('repCards').innerHTML=cards;
+    var htb=(d.hazards||[]).map(function(h){
+      return '<tr><td>'+h.id+'</td><td>'+esc(h.title)+'</td><td>'+esc(h.area)+'</td><td><span class="badge '+(h.level==='high'?'b-red':h.level==='mid'?'b-orange':'b-blue')+'">'+(levelNames[h.level]||h.level)+'</span></td><td>'+statusNames[h.status]+'</td><td>'+esc(h.reporter_name)+'</td></tr>';
+    }).join('');
+    $('repHazBody').innerHTML = htb || '<tr><td colspan="6" class="empty">当日无新增隐患</td></tr>';
+    var ttb=(d.tasks||[]).map(function(t){
+      return '<tr><td>'+t.id+'</td><td>'+esc(t.name)+'</td><td>'+periodNames[t.period]+'</td><td>'+esc(t.area)+'</td><td>'+taskStatusNames[t.status]+'</td></tr>';
+    }).join('');
+    $('repTaskBody').innerHTML = ttb || '<tr><td colspan="5" class="empty">当日无新增任务</td></tr>';
+  });
+}
+function loadMonthlyReport(){
+  if(!$('repMonth').value){
+    var n = new Date();
+    $('repMonth').value = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0');
+  }
+  var month = $('repMonth').value;
+  req('GET','/admin/monthly-report?month='+month).then(function(d){
+    var html = '<div class="cards" style="margin:14px 0">';
+    html += stat('健康分', d.score, d.score<75?'red':'green');
+    html += stat('任务完成率', d.taskRate+'%', d.taskRate<90?'orange':'green');
+    html += stat('隐患闭环率', d.hazardRate+'%', d.hazardRate<90?'orange':'green');
+    html += stat('任务总数', d.taskTotal, '');
+    html += stat('隐患总数', d.hazardTotal, '');
+    html += stat('未闭环隐患', d.openHazards, d.openHazards>0?'red':'');
+    html += stat('巡检次数', d.inspections, '');
+    html += stat('台账记录', d.ledger, '');
+    html += stat('验收', d.acceptance, '');
+    html += stat('快检', d.spotChecks, '');
+    html += stat('抽考', d.quizzes, '');
+    html += '</div>';
+    html += '<h4 style="margin:12px 0 6px;color:var(--text)">履职情况</h4>';
+    html += '<p style="line-height:1.8;color:#334155;background:#f8fafc;padding:12px;border-radius:8px">'+esc(d.summary)+'</p>';
+    html += '<h4 style="margin:14px 0 6px;color:var(--text)">存在问题</h4>';
+    html += '<ul style="padding-left:20px;line-height:1.9;color:#334155">'+(d.problems||[]).map(function(p){return '<li>'+esc(p)+'</li>';}).join('')+'</ul>';
+    html += '<h4 style="margin:14px 0 6px;color:var(--text)">下一步措施</h4>';
+    html += '<ul style="padding-left:20px;line-height:1.9;color:#334155">'+(d.measures||[]).map(function(m){return '<li>'+esc(m)+'</li>';}).join('')+'</ul>';
+    $('monthlyReport').innerHTML = html;
+  });
+}
+
+// ---------- 单位 / 楼宇 / 场所 三级联动筛选 ----------
+// 各业务视图的组织筛选下拉 id 前缀：haz/sup/task/led/acc/quiz/spot/ph/ov
+var ORG_PREFIXES = ['haz','sup','task','led','acc','quiz','spot','ph','ov'];
+
+// 初始化所有业务视图的单位下拉
+function loadOrgFilters(){
+  req('GET','/admin/units').then(function(list){
+    ORG_PREFIXES.forEach(function(p){
+      var sel=$(p+'Unit'); if(!sel) return;
+      sel.innerHTML='<option value="">全部单位</option>'+list.map(function(u){return '<option value="'+u.id+'">'+esc(u.name)+'</option>';}).join('');
+      ssRefresh(sel);
+    });
+    // 加载单位后，同步 i18n 应用（让 data-i18n 节点根据当前语言显示）
+    if (typeof applyI18n === 'function') applyI18n();
+  });
+}
+
+// 根据单位填楼宇
+function fillBldByUnit(p){
+  var uid=$(p+'Unit').value;
+  var bSel=$(p+'Bld');
+  if(!bSel) return;
+  bSel.innerHTML='<option value="">全部楼宇</option>';
+  ssRefresh(bSel);
+  $(p+'Plc').innerHTML='<option value="">全部场所</option>';
+  ssRefresh($(p+'Plc'));
+  if(!uid) return;
+  req('GET','/admin/buildings?unitId='+uid).then(function(list){
+    bSel.innerHTML='<option value="">全部楼宇</option>'+list.map(function(b){return '<option value="'+b.id+'">'+esc(b.name)+'</option>';}).join('');
+    ssRefresh(bSel);
+  });
+}
+
+// 根据单位+楼宇填场所
+function fillPlcByUnitBld(p){
+  var uid=$(p+'Unit').value, bid=$(p+'Bld').value;
+  var pSel=$(p+'Plc');
+  if(!pSel) return;
+  pSel.innerHTML='<option value="">全部场所</option>';
+  ssRefresh(pSel);
+  if(!uid && !bid) return;
+  var params='unitId='+uid+'&buildingId='+bid;
+  req('GET','/admin/places?'+params).then(function(list){
+    pSel.innerHTML='<option value="">全部场所</option>'+list.map(function(pl){return '<option value="'+pl.id+'">'+esc(pl.name)+'</option>';}).join('');
+    ssRefresh(pSel);
+  });
+}
+
+// 读取当前业务视图的三级筛选，返回 query 字符串（含前导 &）
+function orgQuery(p){
+  var uid=$(p+'Unit').value, bid=$(p+'Bld').value, pid=$(p+'Plc').value;
+  var s=[];
+  if(uid) s.push('unitId='+uid);
+  if(bid) s.push('buildingId='+bid);
+  if(pid) s.push('placeId='+pid);
+  return s.length ? '&'+s.join('&') : '';
+}
+
+// 渲染归属列（单位 / 楼宇 / 场所）
+function orgCell(r){
+  var parts=[];
+  if(r.unit_name) parts.push(esc(r.unit_name));
+  if(r.building_name) parts.push(esc(r.building_name));
+  if(r.place_name) parts.push(esc(r.place_name));
+  return parts.length ? parts.join('<br>') : '<span class="gray">-</span>';
+}
+
+// ---------- 单位 ----------
+function loadUnits(){
+  var q=$('unitQ').value.trim();
+  req('GET','/admin/units'+(q?'?q='+encodeURIComponent(q):'')).then(function(list){
+    var tb='';
+    var lvColor = {1:'#e72428', 2:'#e35b13', 3:'#64748b'};
+    list.forEach(function(u){
+      var lv = u.level || 1;
+      var lvName = unitLevelNames[lv] || ('层级'+lv);
+      var c = lvColor[lv] || '#64748b';
+      var lvBadge = '<span style="display:inline-block;padding:2px 8px;border-radius:4px;background:'+c+'1a;color:'+c+';font-size:12px;font-weight:600">'+lvName+'</span>';
+      var indent = new Array(Math.max(0, lv)).join('&nbsp;&nbsp;&nbsp;&nbsp;');
+      tb+='<tr><td>'+u.id+'</td><td>'+indent+'<b>'+esc(u.name)+'</b></td><td>'+lvBadge+'</td><td>'+esc(u.parent_name||'-')+'</td><td>'+esc(u.code)+'</td><td>'+esc(u.contact)+'</td><td>'+esc(u.phone)+'</td><td>'+u.building_count+'</td><td>'+u.place_count+'</td><td>'+(u.enabled?'<span class="badge b-green">启用</span>':'<span class="badge b-gray">停用</span>')+'</td><td>'+
+        '<span class="link-btn" onclick="editUnit('+u.id+')">编辑</span>'+
+        '<span class="link-btn gray" onclick="delUnit('+u.id+')">删除</span></td></tr>';
+    });
+    $('unitBody').innerHTML = tb || '<tr><td colspan="11" class="empty">暂无单位</td></tr>';
+  });
+}
+function fillParentUnitOptions(selectedParentId, excludeId){
+  var sel = $('umParent');
+  if(!sel) return;
+  var html = '<option value="0">无（顶级 = 省公司）</option>';
+  unitOptions.forEach(function(u){
+    if(excludeId && u.id === excludeId) return; // 编辑时排除自己，避免挂到自己
+    var lv = u.level || 1;
+    var indent = new Array(Math.max(0, lv)).join('　');
+    var lvName = unitLevelNames[lv] || '';
+    html += '<option value="'+u.id+'"'+(u.id===selectedParentId?' selected':'')+'>'+indent+esc(u.name)+(lvName?' ['+lvName+']':'')+'</option>';
+  });
+  sel.innerHTML = html;
+  ssRefresh(sel);
+}
+function openUnitModal(id){
+  editingUnitId = id||0;
+  $('unitModalTitle').textContent = id?'编辑单位':'新增单位';
+  loadUnitOpts().then(function(){
+    var u = id ? unitOptions.find(function(x){return x.id===id;}) : null;
+    $('umName').value = u?u.name:'';
+    $('umCode').value = u?u.code:'';
+    $('umContact').value = u?u.contact:'';
+    $('umPhone2').value = u?u.phone:'';
+    $('umAddr').value = u?u.address:'';
+    $('umSort').value = u?u.sort:0;
+    $('umRemark').value = u?u.remark:'';
+    fillParentUnitOptions(u ? (u.parent_id||0) : 0, id);
+    openModal('unitModal');
+  });
+}
+function saveUnit(){
+  var body={ name:$('umName').value.trim(), code:$('umCode').value.trim(), contact:$('umContact').value.trim(),
+    phone:$('umPhone2').value.trim(), address:$('umAddr').value.trim(), sort:+($('umSort').value||0), remark:$('umRemark').value.trim(),
+    parentId: +($('umParent')?$('umParent').value:0) || 0 };
+  if(!body.name){ toast('单位名称不能为空'); return; }
+  var p = editingUnitId? req('PUT','/admin/units/'+editingUnitId, body) : req('POST','/admin/units', body);
+  p.then(function(){ toast(editingUnitId?'单位已更新':'单位已新增'); closeModal('unitModal'); loadUnits(); });
+}
+function editUnit(id){ openUnitModal(id); }
+function delUnit(id){
+  if(!confirm('确定删除该单位？其下若有楼宇将无法删除。')) return;
+  req('DELETE','/admin/units/'+id).then(function(){ toast('单位已删除'); loadUnits(); });
+}
+
+// ---------- 楼宇 ----------
+function loadUnitOpts(){
+  return req('GET','/admin/units').then(function(list){
+    unitOptions = list;
+    var html='<option value="">全部单位</option>'+list.map(function(u){return '<option value="'+u.id+'">'+esc(u.name)+'</option>';}).join('');
+    var phtml='<option value="">请选择单位</option>'+list.map(function(u){return '<option value="'+u.id+'">'+esc(u.name)+'</option>';}).join('');
+    var sel=$('bldUnit'); if(sel){ var keep=sel.value; sel.innerHTML=html; sel.value=keep; ssRefresh(sel); }
+    var sel2=$('plcUnit'); if(sel2){ var keep2=sel2.value; sel2.innerHTML=html; sel2.value=keep2; ssRefresh(sel2); }
+    var msel=$('bmUnit'); if(msel){ msel.innerHTML=phtml; ssRefresh(msel); }
+    var pmsel=$('pmUnit'); if(pmsel){ var keep3=pmsel.value; pmsel.innerHTML=phtml; pmsel.value=keep3; ssRefresh(pmsel); }
+    return list;
+  });
+}
+function loadBuildings(){
+  var uid=$('bldUnit').value, q=$('bldQ').value.trim();
+  var qs=[];
+  if(uid) qs.push('unitId='+uid);
+  if(q) qs.push('q='+encodeURIComponent(q));
+  req('GET','/admin/buildings'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var tb='';
+    list.forEach(function(b){
+      tb+='<tr><td>'+b.id+'</td><td><b>'+esc(b.name)+'</b></td><td>'+esc(b.unit_name)+'</td><td>'+esc(b.code)+'</td><td>'+b.floors+'</td><td>'+esc(b.address)+'</td><td>'+b.place_count+'</td><td>'+(b.enabled?'<span class="badge b-green">启用</span>':'<span class="badge b-gray">停用</span>')+'</td><td>'+
+        '<span class="link-btn" onclick="editBuilding('+b.id+')">编辑</span>'+
+        '<span class="link-btn gray" onclick="delBuilding('+b.id+')">删除</span></td></tr>';
+    });
+    $('bldBody').innerHTML = tb || '<tr><td colspan="9" class="empty">暂无楼宇</td></tr>';
+  });
+}
+function openBuildingModal(id){
+  editingBldId = id||0;
+  $('bldModalTitle').textContent = id?'编辑楼宇':'新增楼宇';
+  loadUnitOpts().then(function(){
+    var b = id ? null : null;
+    if(id){
+      req('GET','/admin/buildings?q='+id).then(function(list){
+        var b=null; list.forEach(function(x){ if(x.id===id) b=x; });
+        if(b){ $('bmUnit').value=b.unit_id||''; $('bmName').value=b.name; $('bmCode').value=b.code; $('bmFloors').value=b.floors||0; $('bmAddr').value=b.address; $('bmRemark').value=b.remark; }
+        openModal('bldModal');
+      });
+    } else {
+      $('bmUnit').value=''; $('bmName').value=''; $('bmCode').value=''; $('bmFloors').value=0; $('bmAddr').value=''; $('bmRemark').value='';
+      openModal('bldModal');
+    }
+  });
+}
+function saveBuilding(){
+  var body={ unitId:+($('bmUnit').value||0), name:$('bmName').value.trim(), code:$('bmCode').value.trim(),
+    floors:+($('bmFloors').value||0), address:$('bmAddr').value.trim(), remark:$('bmRemark').value.trim() };
+  if(!body.name){ toast('楼宇名称不能为空'); return; }
+  var p = editingBldId? req('PUT','/admin/buildings/'+editingBldId, body) : req('POST','/admin/buildings', body);
+  p.then(function(){ toast(editingBldId?'楼宇已更新':'楼宇已新增'); closeModal('bldModal'); loadBuildings(); });
+}
+function editBuilding(id){ openBuildingModal(id); }
+function delBuilding(id){
+  if(!confirm('确定删除该楼宇？其下若有场所将无法删除。')) return;
+  req('DELETE','/admin/buildings/'+id).then(function(){ toast('楼宇已删除'); loadBuildings(); });
+}
+
+// ---------- 场所 ----------
+function loadPlaces(){
+  var uid=$('plcUnit').value, bid=$('plcBld').value, q=$('plcQ').value.trim();
+  var qs=[];
+  if(uid) qs.push('unitId='+uid);
+  if(bid) qs.push('buildingId='+bid);
+  if(q) qs.push('q='+encodeURIComponent(q));
+  req('GET','/admin/places'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var tb='';
+    list.forEach(function(p){
+      tb+='<tr><td>'+p.id+'</td><td><b>'+esc(p.name)+'</b></td><td>'+esc(p.unit_name)+'</td><td>'+esc(p.building_name)+'</td><td>'+esc(p.code)+'</td><td>'+esc(p.floor)+'</td><td>'+esc(p.type)+'</td><td>'+(p.enabled?'<span class="badge b-green">启用</span>':'<span class="badge b-gray">停用</span>')+'</td><td>'+
+        '<span class="link-btn" onclick="showPlaceCard('+p.id+')">档案卡</span>'+
+        '<span class="link-btn" onclick="editPlace('+p.id+')">编辑</span>'+
+        '<span class="link-btn gray" onclick="delPlace('+p.id+')">删除</span></td></tr>';
+    });
+    $('plcBody').innerHTML = tb || '<tr><td colspan="9" class="empty">暂无场所</td></tr>';
+  });
+}
+function fillPmBld(){
+  var uid=$('pmUnit').value;
+  req('GET','/admin/buildings?unitId='+uid).then(function(list){
+    bldOptions=list;
+    var sel=$('pmBld');
+    if(sel){ sel.innerHTML='<option value="">请选择楼宇</option>'+list.map(function(b){return '<option value="'+b.id+'">'+esc(b.name)+'</option>';}).join(''); ssRefresh(sel); }
+  });
+}
+function openPlaceModal(id){
+  editingPlcId = id||0;
+  $('plcModalTitle').textContent = id?'编辑场所':'新增场所';
+  loadUnitOpts().then(function(){
+    if(id){
+      req('GET','/admin/places?q='+id).then(function(list){
+        var p=null; list.forEach(function(x){ if(x.id===id) p=x; });
+        if(p){
+          $('pmUnit').value=p.unit_id||''; fillPmBld().then(function(){ $('pmBld').value=p.building_id||''; });
+          $('pmName').value=p.name; $('pmCode').value=p.code; $('pmFloor').value=p.floor; $('pmType').value=p.type; $('pmSort').value=p.sort||0; $('pmRemark').value=p.remark;
+        }
+        openModal('plcModal');
+      });
+    } else {
+      $('pmUnit').value=''; fillPmBld(); $('pmName').value=''; $('pmCode').value=''; $('pmFloor').value=''; $('pmType').value=''; $('pmSort').value=0; $('pmRemark').value='';
+      openModal('plcModal');
+    }
+  });
+}
+function savePlace(){
+  var body={ unitId:+($('pmUnit').value||0), buildingId:+($('pmBld').value||0), name:$('pmName').value.trim(),
+    code:$('pmCode').value.trim(), floor:$('pmFloor').value.trim(), type:$('pmType').value.trim(),
+    sort:+($('pmSort').value||0), remark:$('pmRemark').value.trim() };
+  if(!body.name){ toast('场所名称不能为空'); return; }
+  var p = editingPlcId? req('PUT','/admin/places/'+editingPlcId, body) : req('POST','/admin/places', body);
+  p.then(function(){ toast(editingPlcId?'场所已更新':'场所已新增'); closeModal('plcModal'); loadPlaces(); });
+}
+function editPlace(id){ openPlaceModal(id); }
+function delPlace(id){
+  if(!confirm('确定删除该场所？')) return;
+  req('DELETE','/admin/places/'+id).then(function(){ toast('场所已删除'); loadPlaces(); });
+}
+
+// ---------- 检查标准 ----------
+function loadCheckItems(){
+  var area=$('ciArea').value.trim(), q=$('ciQ').value.trim();
+  var qs=[];
+  if(area) qs.push('area='+encodeURIComponent(area));
+  if(q) qs.push('q='+encodeURIComponent(q));
+  req('GET','/admin/check-items'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var tb='';
+    list.forEach(function(c){
+      tb+='<tr><td>'+c.id+'</td><td>'+esc(c.code)+'</td><td><b>'+esc(c.name)+'</b></td><td>'+esc(c.area)+'</td><td>'+periodNames[c.period]+'</td><td>'+levelNames[c.level]+'</td><td>'+(c.veto?'<span class="badge b-red">是</span>':'否')+'</td><td>'+c.days+'天</td><td>'+roleNames[c.role]+'</td><td>'+(c.enabled?'<span class="badge b-green">启用</span>':'<span class="badge b-gray">停用</span>')+'</td><td>'+
+        '<span class="link-btn" onclick="editCheckItem('+c.id+')">编辑</span>'+
+        '<span class="link-btn gray" onclick="delCheckItem('+c.id+')">删除</span></td></tr>';
+    });
+    $('ciBody').innerHTML = tb || '<tr><td colspan="11" class="empty">暂无检查项</td></tr>';
+  });
+}
+function openCheckItemModal(id){
+  editingCiId = id||0;
+  $('ciModalTitle').textContent = id?'编辑检查项':'新增检查项';
+  var c = null;
+  if(id){
+    req('GET','/admin/check-items?q='+id).then(function(list){
+      list.forEach(function(x){ if(x.id===id) c=x; });
+      if(c){
+        $('ciName').value=c.name; $('ciCode').value=c.code; $('ciArea2').value=c.area; $('ciPeriod').value=c.period;
+        $('ciLevel').value=c.level; $('ciVeto').value=c.veto?'1':'0'; $('ciDays').value=c.days; $('ciRole').value=c.role;
+        $('ciSort').value=c.sort; $('ciHow').value=c.how; $('ciStd').value=c.std; $('ciBasis').value=c.basis; $('ciPenalty').value=c.penalty; $('ciFix').value=c.fix;
+      }
+      openModal('ciModal');
+    });
+  } else {
+    $('ciName').value=''; $('ciCode').value=''; $('ciArea2').value=''; $('ciPeriod').value='daily'; $('ciLevel').value='normal';
+    $('ciVeto').value='0'; $('ciDays').value=3; $('ciRole').value='grass'; $('ciSort').value=0; $('ciHow').value=''; $('ciStd').value=''; $('ciBasis').value=''; $('ciPenalty').value=''; $('ciFix').value='';
+    openModal('ciModal');
+  }
+}
+function saveCheckItem(){
+  var body={ name:$('ciName').value.trim(), code:$('ciCode').value.trim(), area:$('ciArea2').value.trim(),
+    period:$('ciPeriod').value, level:$('ciLevel').value, veto:$('ciVeto').value==='1', days:+($('ciDays').value||3),
+    role:$('ciRole').value, sort:+($('ciSort').value||0), how:$('ciHow').value.trim(), std:$('ciStd').value.trim(),
+    basis:$('ciBasis').value.trim(), penalty:$('ciPenalty').value.trim(), fix:$('ciFix').value.trim() };
+  if(!body.name){ toast('检查项名称不能为空'); return; }
+  var p = editingCiId? req('PUT','/admin/check-items/'+editingCiId, body) : req('POST','/admin/check-items', body);
+  p.then(function(){ toast(editingCiId?'检查项已更新':'检查项已新增'); closeModal('ciModal'); loadCheckItems(); });
+}
+function editCheckItem(id){ openCheckItemModal(id); }
+function delCheckItem(id){
+  if(!confirm('确定删除该检查项？')) return;
+  req('DELETE','/admin/check-items/'+id).then(function(){ toast('检查项已删除'); loadCheckItems(); });
+}
+
+// ---------- 法规库 ----------
+function loadLawItems(){
+  var area=$('lawArea').value.trim(), q=$('lawQ').value.trim();
+  var qs=[];
+  if(area) qs.push('area='+encodeURIComponent(area));
+  if(q) qs.push('q='+encodeURIComponent(q));
+  req('GET','/admin/law-items'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var tb='';
+    list.forEach(function(l){
+      tb+='<tr><td>'+l.id+'</td><td>'+esc(l.area)+'</td><td><b>'+esc(l.name)+'</b></td><td>'+esc(l.category)+'</td><td style="max-width:320px">'+esc((l.basis||'').slice(0,80))+'</td><td style="max-width:200px">'+esc((l.penalty||'').slice(0,60))+'</td><td>'+
+        '<span class="link-btn" onclick="editLawItem('+l.id+')">编辑</span>'+
+        '<span class="link-btn gray" onclick="delLawItem('+l.id+')">删除</span></td></tr>';
+    });
+    $('lawBody').innerHTML = tb || '<tr><td colspan="7" class="empty">暂无法规</td></tr>';
+  });
+}
+function openLawItemModal(id){
+  editingLawId = id||0;
+  $('lawModalTitle').textContent = id?'编辑法规':'新增法规';
+  var l = null;
+  if(id){
+    req('GET','/admin/law-items?q='+id).then(function(list){
+      list.forEach(function(x){ if(x.id===id) l=x; });
+      if(l){ $('lmName').value=l.name; $('lmArea').value=l.area; $('lmCategory').value=l.category; $('lmSort').value=l.sort; $('lmBasis').value=l.basis; $('lmPenalty').value=l.penalty; }
+      openModal('lawModal');
+    });
+  } else {
+    $('lmName').value=''; $('lmArea').value=''; $('lmCategory').value='法律'; $('lmSort').value=0; $('lmBasis').value=''; $('lmPenalty').value='';
+    openModal('lawModal');
+  }
+}
+function saveLawItem(){
+  var body={ name:$('lmName').value.trim(), area:$('lmArea').value.trim(), category:$('lmCategory').value,
+    sort:+($('lmSort').value||0), basis:$('lmBasis').value.trim(), penalty:$('lmPenalty').value.trim() };
+  if(!body.name){ toast('法规名称不能为空'); return; }
+  var p = editingLawId? req('PUT','/admin/law-items/'+editingLawId, body) : req('POST','/admin/law-items', body);
+  p.then(function(){ toast(editingLawId?'法规已更新':'法规已新增'); closeModal('lawModal'); loadLawItems(); });
+}
+function editLawItem(id){ openLawItemModal(id); }
+function delLawItem(id){
+  if(!confirm('确定删除该法规？')) return;
+  req('DELETE','/admin/law-items/'+id).then(function(){ toast('法规已删除'); loadLawItems(); });
+}
+
+// ---------- 隐患 ----------
+function loadHazards(){
+  var s=$('hazStatus').value, l=$('hazLevel').value;
+  var q='';
+  if(s) q+=(q?'&':'?')+'status='+s;
+  if(l) q+=(q?'&':'?')+'level='+l;
+  q+=orgQuery('haz');
+  req('GET','/hazards'+q).then(function(list){
+    var tb='';
+    list.forEach(function(h){
+      var levelB='<span class="badge '+(h.level==='high'?'b-red':h.level==='mid'?'b-orange':'b-blue')+'">'+(levelNames[h.level]||h.level)+'</span>';
+      var statusB='<span class="badge '+(h.status==='closed'?'b-green':h.status==='open'?'b-red':'b-orange')+'">'+(statusNames[h.status]||h.status)+'</span>';
+      var over = h.deadline && h.status!=='closed' && String(h.deadline).slice(0,10) < new Date().toISOString().slice(0,10);
+      tb+='<tr><td>'+h.id+'</td><td>'+(h.title||'-')+'</td><td>'+orgCell(h)+'</td><td>'+(h.area||'-')+'</td><td>'+levelB+'</td><td>'+statusB+'</td>'+
+        '<td>'+(h.reporter_name||'-')+'</td><td>'+(h.deadline||'-')+(over?' <span class="badge b-red">超期</span>':'')+'</td><td>'+
+        '<span class="link-btn" onclick="closeHaz('+h.id+')">直接闭环</span>'+
+        (h.status!=='closed'?'<span class="link-btn" onclick="reopenHaz('+h.id+')">重开</span>':'')+'</td></tr>';
+    });
+    $('hazBody').innerHTML = tb || '<tr><td colspan="9" class="empty">暂无隐患</td></tr>';
+  });
+}
+function closeHaz(id){ if(!confirm('确定将该隐患直接闭环？')) return; req('POST','/hazards/'+id+'/close',{}).then(function(){ toast('已闭环'); loadHazards(); }); }
+function reopenHaz(id){ req('POST','/hazards/'+id+'/reopen',{}).then(function(){ toast('已重新打开'); loadHazards(); }); }
+
+// ---------- 督办 ----------
+function loadSupervise(){
+  var s=$('supStatus').value;
+  var qs=[];
+  if(s) qs.push('status='+s);
+  var oq=orgQuery('sup').replace(/^\&/,'');
+  if(oq) qs.push(oq);
+  req('GET','/admin/supervise'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var tb='';
+    list.forEach(function(t){
+      var sb='<span class="badge '+(t.status==='done'?'b-green':t.status==='assigned'?'b-red':'b-orange')+'">'+(supStatusNames[t.status]||t.status)+'</span>';
+      tb+='<tr><td>'+t.id+'</td><td>'+(t.hazard_title||'#'+t.hazard_id)+'</td><td>'+orgCell(t)+'</td><td>'+esc(t.assignee_name)+'</td><td>'+esc(t.deadline)+'</td><td>'+esc(t.note)+'</td><td>'+sb+'</td><td>'+esc(t.created_at)+'</td><td>'+
+        '<select style="height:30px;border:1px solid var(--border);border-radius:6px" onchange="setSupStatus('+t.id+',this.value)">'+
+        '<option value="assigned"'+(t.status==='assigned'?' selected':'')+'>待整改</option>'+
+        '<option value="in_progress"'+(t.status==='in_progress'?' selected':'')+'>整改中</option>'+
+        '<option value="done"'+(t.status==='done'?' selected':'')+'>已完成</option>'+
+        '<option value="rejected"'+(t.status==='rejected'?' selected':'')+'>已驳回</option></select></td></tr>';
+    });
+    $('supBody').innerHTML = tb || '<tr><td colspan="9" class="empty">暂无督办任务</td></tr>';
+  });
+}
+function setSupStatus(id,status){ req('POST','/admin/supervise/'+id+'/status',{status:status}).then(function(){ toast('状态已更新'); loadSupervise(); }); }
+
+// ---------- 任务 ----------
+function loadTasks(){
+  var s=$('taskStatus').value, p=$('taskPeriod').value;
+  var q='';
+  if(s) q+=(q?'&':'?')+'status='+s;
+  if(p) q+=(q?'&':'?')+'period='+p;
+  q+=orgQuery('task');
+  req('GET','/tasks'+q).then(function(list){
+    var tb='';
+    list.forEach(function(t){
+      var statusB='<span class="badge '+(t.status==='done'?'b-green':'b-orange')+'">'+(taskStatusNames[t.status]||t.status)+'</span>';
+      tb+='<tr><td>'+t.id+'</td><td>'+esc(t.code)+'</td><td>'+(t.name||'-')+'</td>'+
+        '<td>'+periodNames[t.period]+'</td><td>'+orgCell(t)+'</td><td>'+(t.area||'-')+'</td><td>'+statusB+'</td>'+
+        '<td>'+(t.score!==null&&t.score!==undefined?t.score:'-')+'</td><td>'+(t.due_date||'-')+'</td></tr>';
+    });
+    $('taskBody').innerHTML = tb || '<tr><td colspan="9" class="empty">暂无任务</td></tr>';
+  });
+}
+
+// ---------- 台账 ----------
+function loadLedger(){
+  var q=$('ledQ').value.trim(), type=$('ledType').value;
+  var qs=[];
+  if(type) qs.push('type='+encodeURIComponent(type));
+  if(q) qs.push('q='+encodeURIComponent(q));
+  var oq=orgQuery('led').replace(/^\&/,'');
+  if(oq) qs.push(oq);
+  req('GET','/admin/ledger'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    // 收集类型
+    var types={};
+    list.forEach(function(l){ if(l.type) types[l.type]=1; });
+    var thtml='<option value="">全部类型</option>'+Object.keys(types).map(function(k){return '<option value="'+esc(k)+'">'+(ledgerTypeNames[k]||esc(k))+'</option>';}).join('');
+    $('ledType').innerHTML=thtml; $('ledType').value=type; ssRefresh($('ledType'));
+    var tb='';
+    list.forEach(function(l){
+      tb+='<tr><td>'+l.id+'</td><td>'+(ledgerTypeNames[l.type]||esc(l.type))+'</td><td><b>'+esc(l.title)+'</b></td><td>'+orgCell(l)+'</td><td style="max-width:360px">'+esc((l.content||'').slice(0,100))+'</td><td>'+esc(l.user_name)+'</td><td>'+esc(l.created_at)+'</td><td>'+
+        '<span class="link-btn gray" onclick="delLedger('+l.id+')">删除</span></td></tr>';
+    });
+    $('ledBody').innerHTML = tb || '<tr><td colspan="8" class="empty">暂无台账记录</td></tr>';
+  });
+}
+function delLedger(id){ if(!confirm('确定删除该台账记录？')) return; req('DELETE','/admin/ledger/'+id).then(function(){ toast('已删除'); loadLedger(); }); }
+
+// ---------- 验收 ----------
+function loadAcceptance(){
+  var q=$('accQ').value.trim();
+  var qs=[];
+  if(q) qs.push('q='+encodeURIComponent(q));
+  var oq=orgQuery('acc').replace(/^\&/,'');
+  if(oq) qs.push(oq);
+  req('GET','/admin/acceptance'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var tb='';
+    list.forEach(function(a){
+      var rb='<span class="badge '+(a.result==='pass'?'b-green':a.result==='fail'?'b-red':'b-orange')+'">'+(a.result==='pass'?'通过':a.result==='fail'?'不通过':'待定')+'</span>';
+      tb+='<tr><td>'+a.id+'</td><td>'+esc(a.project)+'</td><td>'+orgCell(a)+'</td><td>'+rb+'</td><td style="max-width:300px">'+esc((a.note||'').slice(0,80))+'</td><td>'+esc(a.user_name)+'</td><td>'+esc(a.created_at)+'</td><td>'+
+        '<span class="link-btn gray" onclick="delAcceptance('+a.id+')">删除</span></td></tr>';
+    });
+    $('accBody').innerHTML = tb || '<tr><td colspan="8" class="empty">暂无验收记录</td></tr>';
+  });
+}
+function delAcceptance(id){ if(!confirm('确定删除该验收记录？')) return; req('DELETE','/admin/acceptance/'+id).then(function(){ toast('已删除'); loadAcceptance(); }); }
+
+// ---------- 抽考 ----------
+function loadQuiz(){
+  var qs=[];
+  var oq=orgQuery('quiz').replace(/^\&/,'');
+  if(oq) qs.push(oq);
+  req('GET','/admin/quiz-records'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var tb='';
+    list.forEach(function(q){
+      var qs=[];
+      try{ qs=JSON.parse(q.questions||'[]'); }catch(e){}
+      var detail = qs.map(function(x){ return (x.question||x.name||'')+' → '+esc(x.answer||x.userAnswer||'-'); }).join('；');
+      tb+='<tr><td>'+q.id+'</td><td>'+esc(q.employee_name)+'</td><td>'+orgCell(q)+'</td><td><b>'+q.score+'</b></td><td>'+q.total+'</td><td>'+q.quizzer_id+'</td><td>'+esc(q.created_at)+'</td><td style="max-width:360px">'+detail+'</td></tr>';
+    });
+    $('quizBody').innerHTML = tb || '<tr><td colspan="8" class="empty">暂无抽考记录</td></tr>';
+  });
+}
+
+// ---------- 快检 ----------
+function loadSpot(){
+  var qs=[];
+  var oq=orgQuery('spot').replace(/^\&/,'');
+  if(oq) qs.push(oq);
+  req('GET','/admin/spot-records'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var tb='';
+    list.forEach(function(s){
+      tb+='<tr><td>'+s.id+'</td><td>'+(s.mode==='deep'?'深度':'十查')+'</td><td>'+esc(s.site_name)+'</td><td>'+orgCell(s)+'</td><td><span class="badge b-green">'+s.pass_count+'</span></td><td><span class="badge b-red">'+s.fail_count+'</span></td><td style="max-width:280px">'+esc((s.conclusion||'').slice(0,60))+'</td><td>'+esc(s.user_name)+'</td><td>'+esc(s.created_at)+'</td></tr>';
+    });
+    $('spotBody').innerHTML = tb || '<tr><td colspan="9" class="empty">暂无快检记录</td></tr>';
+  });
+}
+
+// ---------- 照片墙 ----------
+function loadPhotos(){
+  var bt=$('phBizType').value;
+  var qs=[];
+  if(bt) qs.push('bizType='+bt);
+  var oq=orgQuery('ph').replace(/^\&/,'');
+  if(oq) qs.push(oq);
+  req('GET','/admin/photos'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var tb='';
+    list.forEach(function(p){
+      var img = p.data_url ? '<img class="img-thumb" src="'+p.data_url+'" onclick="window.open(this.src)">' : '-';
+      tb+='<tr><td>'+p.id+'</td><td>'+(p.biz_type==='hazard'?'隐患':'巡检')+'</td><td>'+p.biz_id+'</td><td>'+esc(p.site_id)+'</td><td>'+orgCell(p)+'</td><td>'+img+'</td><td>'+esc(p.caption)+'</td><td>'+esc(p.created_at)+'</td><td>'+
+        '<span class="link-btn gray" onclick="delPhoto('+p.id+')">删除</span></td></tr>';
+    });
+    $('phBody').innerHTML = tb || '<tr><td colspan="9" class="empty">暂无照片</td></tr>';
+  });
+}
+function delPhoto(id){ if(!confirm('确定删除该照片？')) return; req('DELETE','/admin/photos/'+id).then(function(){ toast('已删除'); loadPhotos(); }); }
+
+// ---------- 账号 ----------
+function loadUsers(){
+  var q=$('userQ').value.trim();
+  req('GET','/admin/users'+(q?'?q='+encodeURIComponent(q):'')).then(function(list){
+    var tb='';
+    list.forEach(function(u){
+      var roleB='<span class="badge b-role">'+(roleNames[u.role]||u.role)+'</span>';
+      var statusB= u.status===1 ? '<span class="badge b-green">启用</span>' : '<span class="badge b-gray">停用</span>';
+      // 单位列：admin 显示"-"，非 admin 显示单位名或红色"未分配"
+      var unitTd = (u.role==='admin')
+        ? '-'
+        : (u.unit_name ? esc(u.unit_name) : '<span style="color:var(--primary);font-weight:600">'+t('userUnassigned')+'</span>');
+      var changeUnitBtn = (u.role==='admin') ? '' : '<span class="link-btn" onclick="changeUnit('+u.id+','+(u.unit_id||0)+')">'+t('userChangeUnit')+'</span>';
+      tb+='<tr><td>'+u.id+'</td><td>'+u.phone+'</td><td>'+(u.name||'-')+'</td><td>'+roleB+'</td><td>'+unitTd+'</td><td>'+statusB+'</td>'+
+        '<td>'+(u.last_login_at||'-')+'</td><td>'+
+        '<span class="link-btn" onclick="editName('+u.id+',\''+(u.name||'').replace(/'/g,'')+'\')">改名字</span>'+
+        '<span class="link-btn" onclick="resetPwd('+u.id+')">重置密码</span>'+
+        '<span class="link-btn" onclick="setRole('+u.id+',\''+u.role+'\')">改角色</span>'+
+        changeUnitBtn+
+        '<span class="link-btn '+(u.status===1?'':'gray')+'" onclick="toggleStatus('+u.id+','+(u.status===1?0:1)+')">'+(u.status===1?'停用':'启用')+'</span>'+
+        '<span class="link-btn gray" onclick="delUser('+u.id+')">删除</span></td></tr>';
+    });
+    $('userBody').innerHTML = tb || '<tr><td colspan="8" class="empty">暂无账号</td></tr>';
+  });
+}
+function loadUserUnitOptions(){
+  // 填充"新增账号"和"改单位"两个单位下拉（树形缩进展示三级单位）
+  req('GET','/admin/units').then(function(list){
+    var opts='<option value="">'+t('userSelectUnit')+'</option>'+list.map(function(u){
+      var lv = u.level || 1;
+      var indent = new Array(Math.max(0, lv)).join('　');
+      var lvName = unitLevelNames[lv] || '';
+      return '<option value="'+u.id+'">'+indent+esc(u.name)+(lvName?' ['+lvName+']':'')+'</option>';
+    }).join('');
+    if($('umUnit')){ $('umUnit').innerHTML=opts; ssRefresh($('umUnit')); }
+    if($('umUnit2')){ $('umUnit2').innerHTML=opts; ssRefresh($('umUnit2')); }
+  });
+}
+function onUserRoleChange(){
+  var role=$('umRole').value;
+  $('umUnitField').style.display = (role==='admin') ? 'none' : '';
+}
+function openUserModal(){
+  openModal('userModal');
+  $('umPhone').value=''; $('umUserName').value=''; $('umRole').value='grass'; $('umPwd').value='Fw12345678';
+  if($('umUnit')) $('umUnit').value='';
+  onUserRoleChange();
+}
+function createUser(){
+  var role=$('umRole').value;
+  var unitId=$('umUnit')?$('umUnit').value:'';
+  if(role!=='admin' && !unitId){ toast(t('userSelectUnitRequired')); return; }
+  req('POST','/admin/users',{phone:$('umPhone').value.trim(), name:$('umUserName').value.trim(), role:role, password:$('umPwd').value, unitId:unitId||0})
+  .then(function(){ toast('账号已创建'); closeModal('userModal'); loadUsers(); });
+}
+function toggleStatus(id,status){ req('POST','/admin/users/'+id+'/status',{status:status}).then(function(){ toast('已更新'); loadUsers(); }); }
+var _changeUnitId = 0;
+function changeUnit(id, curUnit){
+  _changeUnitId = id;
+  if($('umUnit2')) $('umUnit2').value = curUnit || '';
+  openModal('userUnitModal');
+}
+function saveUserUnit(){
+  var unitId=$('umUnit2')?$('umUnit2').value:'';
+  if(!unitId){ toast(t('userSelectUnit')); return; }
+  req('PUT','/admin/users/'+_changeUnitId, {unitId: parseInt(unitId,10)})
+  .then(function(){ toast(t('userUnitUpdated')); closeModal('userUnitModal'); loadUsers(); });
+}
+function editName(id, cur){
+  var p = prompt('请输入新姓名（≤20字）：', cur || '');
+  if(p === null) return;
+  p = p.trim();
+  if(!p){ toast('姓名不能为空'); return; }
+  if(p.length > 20){ toast('姓名不能超过 20 字'); return; }
+  req('PUT','/admin/users/'+id, {name: p}).then(function(){ toast('姓名已更新'); loadUsers(); });
+}
+function resetPwd(id){
+  var p=prompt('请输入新密码（≥8位含字母数字）：','Fw12345678');
+  if(!p) return;
+  req('POST','/admin/users/'+id+'/reset-password',{newPassword:p}).then(function(){ toast('密码已重置'); });
+}
+var _changeRoleId = 0;
+function setRole(id, cur){
+  _changeRoleId = id;
+  if($('rmRoleSel')) $('rmRoleSel').value = cur || 'grass';
+  openModal('roleModal');
+}
+function saveRole(){
+  var role = $('rmRoleSel') ? $('rmRoleSel').value : '';
+  if(!role){ toast('请选择角色'); return; }
+  req('POST','/admin/users/'+_changeRoleId+'/role',{role:role})
+  .then(function(){ toast('角色已更新'); closeModal('roleModal'); loadUsers(); });
+}
+function delUser(id){
+  if(!confirm('确定删除该账号？此操作不可恢复。')) return;
+  req('DELETE','/admin/users/'+id).then(function(){ toast('账号已删除'); loadUsers(); });
+}
+
+// ---------- 维保报修 ----------
+function loadRepairs(){
+  var qs=[];
+  var st=$('repStatus').value, un=$('repUnit').value;
+  if(st) qs.push('status='+st);
+  if(un) qs.push('unitId='+un);
+  req('GET','/repairs'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var stColor={open:'#e35b13', repairing:'#1e6fff', checking:'#7c3aed', closed:'#16a34a'};
+    var stName={open:'已登记', repairing:'维修中', checking:'待验收', closed:'已闭环'};
+    var tb='';
+    list.forEach(function(r){
+      var c=stColor[r.status]||'#64748b';
+      var stBadge='<span style="display:inline-block;padding:2px 8px;border-radius:4px;background:'+c+'1a;color:'+c+';font-size:12px;font-weight:600">'+(stName[r.status]||r.status)+'</span>';
+      var ops='';
+      if(r.status==='open') ops+='<span class="link-btn" onclick="repairAction('+r.id+',\'repairing\')">开始维修</span>';
+      if(r.status==='repairing') ops+='<span class="link-btn" onclick="repairAction('+r.id+',\'checking\')">待验收</span>';
+      if(r.status==='checking') ops+='<span class="link-btn" onclick="repairAction('+r.id+',\'closed\')">闭环</span>';
+      if(r.status==='closed') ops+='<span class="link-btn gray" onclick="delRepair('+r.id+')">删除</span>';
+      tb+='<tr><td>'+r.id+'</td><td>'+esc(r.code)+'</td><td><b>'+esc(r.device)+'</b></td><td>'+esc(r.location)+'</td><td>'+esc(r.unit_name||'-')+'</td><td>'+esc((r.fault_desc||'').substring(0,30))+'</td><td>'+stBadge+'</td><td>'+esc(r.deadline||'-')+'</td><td>'+esc(r.reporter_name||'-')+'</td><td>'+ops+'</td></tr>';
+    });
+    $('repBody').innerHTML = tb || '<tr><td colspan="10" class="empty">暂无报修记录</td></tr>';
+  });
+}
+function openRepairModal(){
+  openModal('repairModal');
+  $('rmDevice').value=''; $('rmLocation').value=''; $('rmFault').value=''; $('rmDeadline').value='';
+  req('GET','/admin/units').then(function(list){
+    var sel=$('rmUnit');
+    if(sel){ sel.innerHTML='<option value="">请选择单位</option>'+list.map(function(u){return '<option value="'+u.id+'">'+esc(u.name)+'</option>';}).join(''); sel.value=''; ssRefresh(sel); }
+  });
+}
+function saveRepair(){
+  var device=$('rmDevice').value.trim();
+  if(!device){ toast('设备名称不能为空'); return; }
+  req('POST','/repairs',{device:device, location:$('rmLocation').value.trim(), unitId:$('rmUnit')?+$('rmUnit').value:0, faultDesc:$('rmFault').value.trim(), deadline:$('rmDeadline').value})
+  .then(function(){ toast('报修已登记'); closeModal('repairModal'); loadRepairs(); });
+}
+function repairAction(id, status){
+  var extra={};
+  if(status==='checking'){ var n=prompt('请输入维修说明：',''); if(n===null) return; extra.repairNote=n; }
+  if(status==='closed'){ var c=prompt('请输入验收说明（确认故障已排除、设备恢复正常）：',''); if(c===null) return; extra.checkNote=c; }
+  req('POST','/repairs/'+id+'/status', Object.assign({status:status}, extra)).then(function(){ toast('状态已更新'); loadRepairs(); });
+}
+function delRepair(id){
+  if(!confirm('确定删除该报修记录？')) return;
+  req('DELETE','/repairs/'+id).then(function(){ toast('已删除'); loadRepairs(); });
+}
+
+// ---------- 任务下发 ----------
+function loadNotices(){
+  var qs=[];
+  var st=$('ntStatus').value;
+  if(st) qs.push('status='+st);
+  req('GET','/notices'+(qs.length?'?'+qs.join('&'):'')).then(function(list){
+    var stColor={active:'#1e6fff', done:'#16a34a', cancelled:'#64748b'};
+    var stName={active:'进行中', done:'已完成', cancelled:'已取消'};
+    var tb='';
+    list.forEach(function(n){
+      var c=stColor[n.status]||'#64748b';
+      var stBadge='<span style="display:inline-block;padding:2px 8px;border-radius:4px;background:'+c+'1a;color:'+c+';font-size:12px;font-weight:600">'+(stName[n.status]||n.status)+'</span>';
+      var ops='';
+      if(n.status==='active') ops+='<span class="link-btn" onclick="noticeAction('+n.id+',\'done\')">完成</span><span class="link-btn" onclick="noticeAction('+n.id+',\'cancelled\')">取消</span>';
+      if(n.status==='cancelled'||n.status==='done') ops+='<span class="link-btn gray" onclick="delNotice('+n.id+')">删除</span>';
+      tb+='<tr><td>'+n.id+'</td><td><b>'+esc(n.title)+'</b></td><td>'+esc(n.unit_name||'-')+'</td><td>'+esc((n.content||'').substring(0,40))+'</td><td>'+esc(n.deadline||'-')+'</td><td>'+stBadge+'</td><td>'+esc(n.creator_name||'-')+'</td><td>'+esc((n.created_at||'').substring(0,16))+'</td><td>'+ops+'</td></tr>';
+    });
+    $('ntBody').innerHTML = tb || '<tr><td colspan="9" class="empty">暂无下发任务</td></tr>';
+  });
+}
+function openNoticeModal(){
+  openModal('noticeModal');
+  $('nmTitle').value=''; $('nmContent').value=''; $('nmDeadline').value='';
+  req('GET','/admin/units').then(function(list){
+    var sel=$('nmUnit');
+    if(sel){ sel.innerHTML='<option value="0">全部单位</option>'+list.map(function(u){return '<option value="'+u.id+'">'+esc(u.name)+'</option>';}).join(''); sel.value='0'; ssRefresh(sel); }
+  });
+}
+function saveNotice(){
+  var title=$('nmTitle').value.trim();
+  if(!title){ toast('任务标题不能为空'); return; }
+  req('POST','/notices',{title:title, content:$('nmContent').value.trim(), unitId:$('nmUnit')?+$('nmUnit').value:0, deadline:$('nmDeadline').value})
+  .then(function(){ toast('任务已下发'); closeModal('noticeModal'); loadNotices(); });
+}
+function noticeAction(id, status){
+  req('POST','/notices/'+id+'/status', {status:status}).then(function(){ toast('状态已更新'); loadNotices(); });
+}
+function delNotice(id){
+  if(!confirm('确定删除该任务？')) return;
+  req('DELETE','/notices/'+id).then(function(){ toast('已删除'); loadNotices(); });
+}
+
+// ---------- 履职画像 ----------
+function loadProfile(){
+  req('GET','/admin/units').then(function(list){
+    var sel=$('pfUnit');
+    if(sel && !sel.dataset.loaded){
+      sel.innerHTML='<option value="0">全部单位</option>'+list.map(function(u){return '<option value="'+u.id+'">'+esc(u.name)+'</option>';}).join('');
+      sel.dataset.loaded='1';
+      ssRefresh(sel);
+    }
+  });
+  var uid=$('pfUnit')?$('pfUnit').value:'0';
+  req('GET','/admin/profile?unitId='+(uid||0)).then(function(d){
+    var cards='';
+    cards+=stat('健康分', d.health, d.health<75?'red':'green');
+    cards+=stat('任务完成率', d.taskRate+'%', d.taskRate<90?'orange':'green');
+    cards+=stat('隐患整改率', d.hazardRate+'%', d.hazardRate<90?'orange':'green');
+    cards+=stat('任务总数', d.taskTotal, '');
+    cards+=stat('未闭环隐患', d.openHazards, d.openHazards>0?'red':'');
+    cards+=stat('重大隐患', d.highHazards, d.highHazards>0?'red':'');
+    cards+=stat('超期隐患', d.overdue, d.overdue>0?'orange':'');
+    cards+=stat('夜间检查', d.nightInspections, '');
+    $('pfCards').innerHTML = cards;
+    var trend = d.trend || [];
+    var trendHtml = '';
+    trend.forEach(function(wk){
+      var r = wk.taskRate || 0;
+      var cls = r >= 75 ? 'good' : (r >= 60 ? 'fair' : '');
+      var hPx = Math.max(4, Math.round(r * 1.4));
+      trendHtml += '<div class="col"><div class="val">'+r+'%</div>'+
+        '<div class="bar '+cls+'" style="height:'+hPx+'px"></div>'+
+        '<div class="wk">'+(wk.week||'').slice(5)+'</div></div>';
+    });
+    $('pfTrend').innerHTML = trendHtml || '<div style="color:var(--muted);font-size:13px">暂无趋势数据</div>';
+  });
+}
+
+// ---------- 场所档案卡 ----------
+function showPlaceCard(id){
+  req('GET','/admin/place-card/'+id).then(function(d){
+    var p = d.place || {};
+    var html = '<div style="text-align:center;margin-bottom:14px">';
+    html += '<div style="font-size:20px;font-weight:700">'+esc(p.name)+'</div>';
+    html += '<div style="color:var(--muted);font-size:13px;margin-top:4px">'+esc(d.unit_name||'-')+' / '+esc(d.building_name||'-')+'</div>';
+    html += '</div>';
+    html += '<div style="font-size:13px;color:#475569;line-height:1.8;margin-bottom:12px">';
+    html += '场所类型：<b>'+esc(p.type||'-')+'</b>　楼层：<b>'+esc(p.floor||'-')+'</b>　编码：<b>'+esc(p.code||'-')+'</b>';
+    html += '</div>';
+    html += '<div style="font-size:14px;font-weight:600;margin:10px 0 6px">本场所检查要点</div>';
+    var items = d.items || [];
+    if(items.length){
+      html += '<table class="mini-table"><thead><tr><th>检查项</th><th>等级</th><th>否决</th></tr></thead><tbody>';
+      items.forEach(function(it){
+        html += '<tr><td>'+esc(it.name)+'</td><td>'+esc(levelNames[it.level]||it.level||'-')+'</td><td>'+(it.veto?'<span style="color:var(--primary);font-weight:700">一票否决</span>':'-')+'</td></tr>';
+      });
+      html += '</tbody></table>';
+    } else {
+      html += '<div style="color:var(--muted);font-size:13px">暂无检查要点</div>';
+    }
+    html += '<div style="margin-top:14px;font-size:12px;color:var(--muted);text-align:center;border-top:1px dashed #ddd;padding-top:10px">';
+    html += '应急电话 119　|　消防控制室 8119<br>带电设备禁用水！机房只能用二氧化碳或干粉';
+    html += '</div>';
+    $('placeCardBody').innerHTML = html;
+    openModal('placeCardModal');
+  });
+}
+
+// ---------- 启动 ----------
+(function init(){
+  ssInit();
+  if(token){ showApp(); loadMe(); }
+  else showLogin();
+})();
+</script>
+</body>
+</html>

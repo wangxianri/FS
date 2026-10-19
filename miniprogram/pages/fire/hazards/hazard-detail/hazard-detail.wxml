@@ -1,0 +1,78 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading">
+    <view>{{txt.loadingText}}</view>
+  </view>
+
+  <block wx:else>
+    <view class="header">
+      <view class="status-badge {{hazard.status === 'closed' ? 'status-closed' : hazard.status === 'rectifying' ? 'status-rectifying' : hazard.status === 'rechecked' ? 'status-rechecked' : 'status-open'}}">
+        {{hazard.statusLabel || '未整改'}}
+      </view>
+      <view class="title">{{hazard.title || '—'}}</view>
+      <view class="subtitle">{{hazard.createdAtText || '—'}}</view>
+    </view>
+
+    <view class="card info-card">
+      <view class="info-row">
+        <text class="info-label">{{txt.hazardLevel}}</text>
+        <text class="info-value level-{{hazard.level}}">{{hazard.levelLabel}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">{{txt.area || '区域'}}</text>
+        <text class="info-value">{{hazard.area || '—'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">{{txt.deadline}}</text>
+        <text class="info-value">{{hazard.days || 0}} {{txt.days}}</text>
+      </view>
+      <view class="info-row" wx:if="{{hazard.owner}}">
+        <text class="info-label">{{txt.owner}}</text>
+        <text class="info-value">{{hazard.owner}}</text>
+      </view>
+    </view>
+
+    <view class="card desc-card" wx:if="{{hazard.desc}}">
+      <view class="section-title">{{txt.hazardDesc}}</view>
+      <view class="desc-body">{{hazard.desc}}</view>
+    </view>
+
+    <view class="card photos-card" wx:if="{{hazard.photos && hazard.photos.length}}">
+      <view class="section-title">现场照片</view>
+      <view class="photo-grid">
+        <image wx:for="{{hazard.photos}}" wx:key="index" class="photo-img"
+               src="{{item}}" mode="aspectFill" data-index="{{index}}" bindtap="previewPhoto" />
+      </view>
+    </view>
+
+    <!-- 操作区 -->
+    <view class="actions">
+      <block wx:if="{{hazard.status === 'open'}}">
+        <view class="btn-primary" bindtap="openAction" data-action="rectify">{{txt.rectify}}</view>
+        <view class="btn-warn" bindtap="openAction" data-action="close">{{txt.close}}</view>
+      </block>
+      <block wx:elif="{{hazard.status === 'rectifying'}}">
+        <view class="btn-primary" bindtap="openAction" data-action="recheck">{{txt.recheck}}</view>
+      </block>
+      <block wx:elif="{{hazard.status === 'rechecked'}}">
+        <view class="btn-primary" bindtap="openAction" data-action="close">{{txt.close}}</view>
+        <view class="btn-warn" bindtap="openAction" data-action="rectify">{{txt.rectify}}</view>
+      </block>
+      <block wx:elif="{{hazard.status === 'closed'}}">
+        <view class="btn-default" bindtap="openAction" data-action="reopen">{{txt.reopen}}</view>
+      </block>
+    </view>
+  </block>
+
+  <!-- 操作弹窗 -->
+  <view class="mask" wx:if="{{action}}" bindtap="closeAction"></view>
+  <view class="action-sheet" wx:if="{{action}}">
+    <view class="sheet-title">
+      {{action === 'rectify' ? txt.rectificationNote : action === 'recheck' ? txt.recheckNote : txt.notePlaceholder}}
+    </view>
+    <textarea class="sheet-input" placeholder="请填写说明" bindinput="onNote" value="{{note}}" />
+    <view class="sheet-btns">
+      <view class="sheet-btn btn-cancel" bindtap="closeAction">{{txt.cancel}}</view>
+      <view class="sheet-btn btn-confirm" bindtap="submitAction">{{submitting ? txt.loading : txt.confirm}}</view>
+    </view>
+  </view>
+</view>

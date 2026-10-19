@@ -1,0 +1,79 @@
+<view class="page-tab">
+  <!-- 类型切换 -->
+  <scroll-view scroll-x class="type-bar" show-scrollbar="{{false}}">
+    <view class="type-list">
+      <view wx:for="{{types}}" wx:key="key"
+            class="type-item {{activeType === item.key ? 'active' : ''}}"
+            data-key="{{item.key}}" bindtap="onType">{{item.label}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 空状态提示 -->
+  <view wx:if="{{!list.length && !loading}}" class="empty-state">
+    <view class="empty-icon">📒</view>
+    <view class="empty-title">暂无{{activeTypeLabel || '记录'}}</view>
+    <view class="empty-tip">点击下方「新增台账」按钮添加第一条记录</view>
+  </view>
+
+  <!-- 列表 -->
+  <view wx:if="{{list.length}}" class="ledger-list">
+    <view class="ledger-card" wx:for="{{list}}" wx:key="id">
+      <view class="ledger-title">{{item.title}}</view>
+      <view class="ledger-content">{{item.content}}</view>
+      <view class="ledger-meta">{{item.createdAtText}}</view>
+    </view>
+  </view>
+
+  <!-- 新增按钮 -->
+  <view class="add-btn" bindtap="showAdd">＋ 新增台账</view>
+</view>
+
+<!-- 新增/编辑弹窗 -->
+<view class="mask" wx:if="{{showSheet}}" bindtap="closeSheet"></view>
+<view class="sheet {{showSheet ? 'show' : ''}}">
+  <view class="sheet-header">
+ <view class="sheet-title">{{isEdit ? txt.edit : txt.add}}</view>
+    <text class="sheet-close" bindtap="closeSheet">✕</text>
+  </view>
+
+  <view class="sheet-body">
+    <view class="field">
+      <view class="field-label">
+        <text class="star">*</text>
+        <text>{{txt.ledgerType}}</text>
+      </view>
+      <input class="field-input disabled" disabled value="{{activeTypeLabel}}" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">{{txt.owner}}</view>
+      <search-picker options="{{org.units}}" labelKey="name" valueKey="id"
+        placeholder="{{txt.selectUnit}}" selectedLabel="{{org.units[org.unitIndex] ? org.units[org.unitIndex].name : ''}}"
+        bind:change="onUnit" />
+      <search-picker options="{{org.blds}}" labelKey="name" valueKey="id"
+        placeholder="{{txt.selectBuilding}}" selectedLabel="{{org.blds[org.bldIndex] ? org.blds[org.bldIndex].name : ''}}"
+        bind:change="onBld" />
+      <search-picker options="{{org.plcs}}" labelKey="name" valueKey="id"
+        placeholder="{{txt.selectPlace}}" selectedLabel="{{org.plcs[org.plcIndex] ? org.plcs[org.plcIndex].name : ''}}"
+        bind:change="onPlc" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">
+        <text class="star">*</text>
+        <text>{{txt.ledgerTitle}}</text>
+      </view>
+      <input class="field-input" placeholder="{{txt.placeholderTitle}}" bindinput="onTitle" value="{{form.title}}" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">{{txt.ledgerContent}}</view>
+      <textarea class="field-textarea" placeholder="{{txt.placeholderContent}}" bindinput="onContent" value="{{form.content}}" />
+    </view>
+  </view>
+
+  <view class="sheet-footer">
+    <view class="footer-btn btn-cancel" bindtap="closeSheet"><text>{{txt.cancel}}</text></view>
+    <view class="footer-btn btn-confirm" bindtap="submit"><text>{{txt.save}}</text></view>
+  </view>
+</view>

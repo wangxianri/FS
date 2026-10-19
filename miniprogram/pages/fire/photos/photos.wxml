@@ -1,0 +1,33 @@
+<view class="page">
+  <view class="card">
+    <view class="card-title">📍 点位选择</view>
+
+    <search-picker options="{{org.units}}" labelKey="name" valueKey="id"
+      placeholder="{{txt.selectUnit}}" selectedLabel="{{org.units[org.unitIndex] ? org.units[org.unitIndex].name : ''}}"
+      bind:change="onUnit" />
+    <search-picker options="{{org.blds}}" labelKey="name" valueKey="id"
+      placeholder="{{txt.selectBuilding}}" selectedLabel="{{org.blds[org.bldIndex] ? org.blds[org.bldIndex].name : ''}}"
+      bind:change="onBld" />
+    <search-picker options="{{org.plcs}}" labelKey="name" valueKey="id"
+      placeholder="{{txt.selectPlace}}" selectedLabel="{{org.plcs[org.plcIndex] ? org.plcs[org.plcIndex].name : ''}}"
+      bind:change="onPlc" />
+
+    <view class="form-item">
+      <input class="input" placeholder-class="ph" placeholder="{{txt.note}}..." bindinput="onCaption" value="{{caption}}" />
+    </view>
+
+    <view class="btn-primary btn-text" bindtap="onUpload" style="color:#fff;">{{uploading ? txt.loading : '📷 ' + txt.photos}}</view>
+  </view>
+
+  <view class="grid" wx:if="{{photos.length}}">
+    <view class="grid-item" wx:for="{{photos}}" wx:key="id">
+      <image class="grid-img" src="{{item.data_url}}" mode="aspectFill" data-index="{{index}}" bindtap="preview" />
+      <view class="grid-caption" wx:if="{{item.caption}}">{{item.caption}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!photos.length && !loading}}" class="empty">
+    <view style="font-size:64rpx;">📷</view>
+    <view style="margin-top:16rpx;">{{txt.noData}}</view>
+  </view>
+</view>

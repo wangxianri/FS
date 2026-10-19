@@ -1,0 +1,44 @@
+<view class="page">
+  <view class="card">
+    <view class="form-item">
+      <input class="input" placeholder="{{txt.name}}" bindinput="onName" value="{{employeeName}}" />
+    </view>
+    <!-- 所属单位/楼宇/场所 -->
+    <view class="form-item">
+      <search-picker options="{{org.units}}" labelKey="name" valueKey="id"
+        placeholder="请选择所属单位" selectedLabel="{{org.units[org.unitIndex] ? org.units[org.unitIndex].name : ''}}"
+        bind:change="onOrgUnit" />
+    </view>
+    <view class="form-item">
+      <search-picker options="{{org.blds}}" labelKey="name" valueKey="id"
+        placeholder="请选择所属楼宇" selectedLabel="{{org.blds[org.bldIndex] ? org.blds[org.bldIndex].name : ''}}"
+        bind:change="onOrgBld" />
+    </view>
+    <view class="form-item">
+      <search-picker options="{{org.plcs}}" labelKey="name" valueKey="id"
+        placeholder="请选择所属场所" selectedLabel="{{org.plcs[org.plcIndex] ? org.plcs[org.plcIndex].name : ''}}"
+        bind:change="onOrgPlc" />
+    </view>
+  </view>
+
+  <!-- 结果 -->
+  <view class="card" wx:if="{{result}}">
+    <view class="result-score">✓ {{result.correct}} / {{result.total}}</view>
+    <view class="q-item" wx:for="{{result.detail}}" wx:key="index">
+      <view class="q-text">{{index + 1}}. {{item.q}}</view>
+      <view class="q-answer {{item.isCorrect ? 'right' : 'wrong'}}">
+        {{item.isCorrect ? '✓' : '✗'}} {{item.explain}}
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:for="{{questions}}" wx:key="index" wx:if="{{!result}}">
+    <view class="q-text">{{index + 1}}. {{item.q}}</view>
+    <view class="q-btns">
+      <view class="q-btn {{answers[index] === true ? 'on-true' : ''}}" data-index="{{index}}" data-val="true" bindtap="onAnswer">✓ {{txt.spotPass}}</view>
+      <view class="q-btn {{answers[index] === false ? 'on-false' : ''}}" data-index="{{index}}" data-val="false" bindtap="onAnswer">✗ {{txt.spotFail}}</view>
+    </view>
+  </view>
+
+  <view class="btn-primary" wx:if="{{!result}}" bindtap="onSubmit">{{txt.submit}}</view>
+</view>

@@ -1,0 +1,222 @@
+.page {
+  padding: 0 24rpx 160rpx;
+}
+
+.header {
+  text-align: center;
+  padding: 48rpx 0 36rpx;
+}
+.header-icon {
+  font-size: 72rpx;
+  line-height: 1;
+  margin-bottom: 16rpx;
+}
+.header-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #333;
+}
+.header-tip {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.form-card {
+  padding: 36rpx 28rpx;
+}
+
+.form-section {
+  margin-bottom: 36rpx;
+}
+.form-section.last {
+  margin-bottom: 0;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 18rpx;
+}
+.star {
+  color: #e63b2e;
+  margin-right: 6rpx;
+}
+.section-sub {
+  font-size: 24rpx;
+  color: #999;
+  font-weight: 400;
+  margin-left: 8rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 96rpx;
+  line-height: 96rpx;
+  background: #f7f8fa;
+  border: 1rpx solid #e5e6eb;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+  font-size: 30rpx;
+  color: #333;
+}
+.form-textarea {
+  width: 100%;
+  min-height: 200rpx;
+  line-height: 1.6;
+  background: #f7f8fa;
+  border: 1rpx solid #e5e6eb;
+  border-radius: 16rpx;
+  padding: 22rpx 24rpx;
+  box-sizing: border-box;
+  font-size: 30rpx;
+  color: #333;
+}
+.placeholder {
+  color: #b0b3bf;
+  font-size: 30rpx;
+}
+.char-count {
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 10rpx;
+}
+
+/* 等级选择 */
+.level-group {
+  display: flex;
+  gap: 20rpx;
+}
+.level-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  background: #f7f8fa;
+  border: 1rpx solid #e5e6eb;
+  border-radius: 16rpx;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  transition: all 0.2s;
+}
+.level-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #ccc;
+}
+.level-item.level-high {
+  background: #fdecea;
+  border-color: #e63b2e;
+  color: #e63b2e;
+  font-weight: 600;
+}
+.level-item.level-high .level-dot { background: #e63b2e; }
+.level-item.level-mid {
+  background: #fff3e0;
+  border-color: #f57c00;
+  color: #f57c00;
+  font-weight: 600;
+}
+.level-item.level-mid .level-dot { background: #f57c00; }
+.level-item.level-low {
+  background: #e3f2fd;
+  border-color: #1565c0;
+  color: #1565c0;
+  font-weight: 600;
+}
+.level-item.level-low .level-dot { background: #1565c0; }
+
+/* 整改期限 */
+.days-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.days-input {
+  width: 180rpx;
+  text-align: center;
+}
+.days-unit {
+  font-size: 30rpx;
+  color: #666;
+}
+
+/* 照片网格 */
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+.photo-wrap,
+.photo-add {
+  position: relative;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+.photo-img {
+  width: 100%;
+  height: 100%;
+}
+.photo-del {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.del-icon {
+  color: #fff;
+  font-size: 22rpx;
+  line-height: 1;
+}
+.photo-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f7f8fa;
+  border: 2rpx dashed #d0d3dc;
+}
+.add-icon {
+  font-size: 56rpx;
+  color: #b0b3bf;
+  line-height: 1;
+  margin-bottom: 8rpx;
+}
+.add-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  margin-top: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96rpx;
+  font-size: 34rpx;
+  font-weight: 600;
+  border-radius: 16rpx;
+}
+.submit-btn text {
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 600;
+  line-height: 1.2;
+}

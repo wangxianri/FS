@@ -1,0 +1,56 @@
+<view class="login-page">
+  <view class="brand">
+    <view class="brand-logo">🔥</view>
+    <view class="brand-name">{{txt.appName}}</view>
+    <view class="brand-slogan">{{txt.appSlogan}}</view>
+  </view>
+
+  <view class="form-card">
+    <view class="form-title">{{txt.phoneLogin}}</view>
+    <view class="login-tip">{{txt.phoneUseTip}}</view>
+
+    <view class="field">
+      <text class="field-label">{{txt.phoneLabel}}</text>
+      <view class="field-input">
+        <input type="number" maxlength="11" placeholder="{{txt.pleaseEnterPhone}}"
+               placeholder-class="placeholder" bindinput="onPhone" value="{{phone}}" />
+      </view>
+    </view>
+
+    <view class="field">
+      <text class="field-label">{{txt.passwordLabel}}</text>
+      <view class="field-input pwd-row">
+        <input password="{{!showPassword}}" placeholder="{{txt.pleaseEnterPassword}}"
+               placeholder-class="placeholder" bindinput="onPassword" value="{{password}}" />
+        <text class="pwd-toggle" bindtap="togglePassword">{{showPassword ? '🙈' : '👁️'}}</text>
+      </view>
+    </view>
+
+    <view class="agree-row">
+      <view class="agree-box {{agreed ? 'on' : ''}}" bindtap="toggleAgree">
+        <text wx:if="{{agreed}}">✓</text>
+      </view>
+      <view class="agree-txt">
+        我已阅读并同意
+        <text class="agree-link" catchtap="goAgreement">《用户协议》</text>
+        与
+        <text class="agree-link" catchtap="goPrivacy">《隐私政策》</text>
+      </view>
+    </view>
+
+    <view class="btn-login {{loading ? 'disabled' : ''}}" bindtap="onLogin">{{loading ? txt.loading : txt.login}}</view>
+
+    <view class="divider">
+      <text class="divider-line"></text>
+      <text class="divider-text">{{txt.phoneLogin}}</text>
+      <text class="divider-line"></text>
+    </view>
+
+    <view class="btn-wx {{loading ? 'disabled' : ''}}" bindtap="onWxLogin">💬 {{txt.wechatLogin}}</view>
+  </view>
+
+  <view class="links">
+    <text class="link" bindtap="goRegister">{{txt.registerAccount}}</text>
+    <text class="link" bindtap="goForgot">{{txt.forgotPassword}}</text>
+  </view>
+</view>

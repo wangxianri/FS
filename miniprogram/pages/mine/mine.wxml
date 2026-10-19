@@ -1,0 +1,53 @@
+<view class="page-tab">
+  <!-- 用户信息 -->
+  <view class="header">
+    <view class="avatar">{{user.name ? user.name[0] : '🙂'}}</view>
+    <view class="info">
+      <view class="name">{{user.name || '—'}}</view>
+      <view class="phone">{{user.phone || ''}}</view>
+      <view class="role">{{user.roleName || user.role || ''}}</view>
+    </view>
+  </view>
+
+  <!-- 菜单 -->
+  <view class="menu card">
+    <view class="menu-row" bindtap="goProfile">
+      <text class="mi">👤</text>
+      <text class="mt">{{txt.myProfile}}</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-row" bindtap="goChangePassword">
+      <text class="mi">🔒</text>
+      <text class="mt">{{txt.changePassword}}</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-row" wx:if="{{user.role === 'admin'}}" bindtap="goAdminUsers">
+      <text class="mi">👥</text>
+      <text class="mt">{{txt.adminUsers}}</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-row" bindtap="changeLang">
+      <text class="mi">🌐</text>
+      <text class="mt">{{txt.language}}</text>
+      <text class="lang">{{txt.langLabel}}</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-row" bindtap="goAgreement">
+      <text class="mi">📄</text>
+      <text class="mt">{{txt.agreement}}</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-row" bindtap="goPrivacy">
+      <text class="mi">🛡️</text>
+      <text class="mt">{{txt.privacyPolicy}}</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-row" bindtap="goAbout">
+      <text class="mi">ℹ️</text>
+      <text class="mt">{{txt.about}}</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <view class="btn-ghost logout" bindtap="onLogout">{{txt.logout}}</view>
+</view>

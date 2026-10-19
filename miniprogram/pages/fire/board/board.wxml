@@ -1,0 +1,33 @@
+<view class="page">
+  <block wx:if="{{board}}">
+    <view class="stats-grid">
+      <view class="stat-card"><view class="stat-num">{{board.total}}</view><view class="stat-label">{{txt.all}}</view></view>
+      <view class="stat-card red"><view class="stat-num">{{board.open}}</view><view class="stat-label">{{txt.hazardStatusOpen}}</view></view>
+      <view class="stat-card orange"><view class="stat-num">{{board.rectifying}}</view><view class="stat-label">{{txt.hazardStatusRectifying}}</view></view>
+      <view class="stat-card green"><view class="stat-num">{{board.closed}}</view><view class="stat-label">{{txt.hazardStatusClosed}}</view></view>
+    </view>
+
+    <view class="stats-grid">
+      <view class="stat-card red"><view class="stat-num">{{board.high}}</view><view class="stat-label">{{txt.levelHigh}}</view></view>
+      <view class="stat-card orange"><view class="stat-num">{{board.mid}}</view><view class="stat-label">{{txt.levelMid}}</view></view>
+      <view class="stat-card blue"><view class="stat-num">{{board.low}}</view><view class="stat-label">{{txt.levelLow}}</view></view>
+      <view class="stat-card gray"><view class="stat-num">{{board.overdue}}</view><view class="stat-label">{{txt.overdue}}</view></view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">{{txt.area}}</view>
+      <view class="bar" wx:for="{{board.areas}}" wx:for-item="a" wx:for-index="areaName" wx:key="areaName">
+        <view class="bar-label">{{areaName}} <text class="bar-num">{{a.open}}/{{a.total}}</text></view>
+        <view class="bar-track"><view class="bar-fill" style="width:{{a.total ? (a.open / a.total) * 100 : 0}}%"></view></view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">{{txt.recentHazards}}</view>
+      <view class="row" wx:for="{{board.recent}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+        <view class="row-title">{{item.title}}</view>
+        <view class="tag {{item.status === 'closed' ? 'tag-green' : 'tag-orange'}}">{{item.statusLabel}}</view>
+      </view>
+    </view>
+  </block>
+</view>

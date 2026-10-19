@@ -1,0 +1,46 @@
+<view class="page-tab">
+  <!-- 筛选区 -->
+  <view class="filter-panel">
+    <view class="filter-row">
+      <text class="filter-label">周期</text>
+      <scroll-view scroll-x class="filter-scroll" show-scrollbar="{{false}}">
+        <view class="filter-chips">
+          <view wx:for="{{filters}}" wx:key="key"
+                class="filter-chip {{activePeriod === item.key ? 'active' : ''}}"
+                data-key="{{item.key}}" bindtap="onPeriod">{{item.label}}</view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="filter-divider"></view>
+
+    <view class="filter-row">
+      <text class="filter-label">状态</text>
+      <scroll-view scroll-x class="filter-scroll" show-scrollbar="{{false}}">
+        <view class="filter-chips">
+          <view wx:for="{{statusFilters}}" wx:key="key"
+                class="filter-chip {{activeStatus === item.key ? 'active' : ''}}"
+                data-key="{{item.key}}" bindtap="onStatus">{{item.label}}</view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 任务列表 -->
+  <view wx:if="{{tasks.length}}" class="task-list">
+    <view class="list-item task-card" wx:for="{{tasks}}" wx:key="id" data-id="{{item.id}}" bindtap="goTask">
+      <view class="task-main">
+        <view class="list-item-title">{{item.name}}</view>
+        <view class="list-item-sub">{{item.area}} · {{item.periodName}} · {{item.dueText}}</view>
+      </view>
+      <view class="tag {{item.status === 'done' ? 'tag-green' : item.status === 'rectifying' ? 'tag-orange' : 'tag-blue'}}">
+        {{item.statusLabel}}
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!tasks.length && !loading}}" class="empty">
+    <view style="font-size:64rpx;">📭</view>
+    <view style="margin-top:16rpx;">{{noData}}</view>
+  </view>
+</view>

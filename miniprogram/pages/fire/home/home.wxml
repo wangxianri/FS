@@ -1,0 +1,110 @@
+<view class="page-tab">
+  <!-- 顶部今日日期 + 健康分 大卡片 -->
+  <view class="hero">
+    <view class="hero-head">
+      <view class="hero-user">
+        <view class="hero-avatar">{{user.name ? user.name[0] : '🙂'}}</view>
+        <view class="hero-userinfo">
+          <view class="hero-name">{{user.name}}</view>
+          <view class="hero-role">{{user.roleName || user.role}}</view>
+          <view class="hero-unit">🏢 {{user.unitName || (user.role === 'admin' ? '全部单位' : '未分配单位')}}</view>
+        </view>
+      </view>
+      <view class="hero-date">
+        <view class="hero-date-week">{{today.weekday}}</view>
+        <view class="hero-date-day">{{today.date}}</view>
+      </view>
+    </view>
+
+    <!-- 健康分圆环 -->
+    <view class="health-row">
+      <view class="ring" style="background: conic-gradient(#ffffff {{health.angle}}deg, rgba(255,255,255,0.25) 0deg);">
+        <view class="ring-inner">
+          <view class="ring-score">{{health.score}}</view>
+          <view class="ring-label">健康分</view>
+        </view>
+      </view>
+      <view class="health-info">
+        <view class="health-title">消防安全形势</view>
+        <view class="health-status {{health.level === 'poor' ? 'hs-bad' : health.level === 'fair' ? 'hs-warn' : 'hs-good'}}">{{health.status}}</view>
+        <view class="health-tip">今日任务完成率 {{health.taskRate}}%</view>
+        <view class="health-refresh" bindtap="refreshHealth">
+          {{refreshing ? '刷新中...' : '刷新评分 ↻'}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-grid">
+    <view class="stat-card stat-red">
+      <view class="stat-num">{{stats.todayTasks}}</view>
+      <view class="stat-label">今日任务</view>
+    </view>
+    <view class="stat-card stat-orange">
+      <view class="stat-num">{{stats.openHazards}}</view>
+      <view class="stat-label">未闭环隐患</view>
+    </view>
+    <view class="stat-card stat-blue">
+      <view class="stat-num">{{stats.highHazards}}</view>
+      <view class="stat-label">高风险隐患</view>
+    </view>
+    <view class="stat-card stat-gray">
+      <view class="stat-num">{{stats.overdue}}</view>
+      <view class="stat-label">逾期隐患</view>
+    </view>
+  </view>
+
+  <!-- 今日履责任务（按周期分组） -->
+  <view class="card" wx:if="{{periodTasks.length}}">
+    <view class="card-title">
+      <text>今日履职</text>
+      <text class="card-more" bindtap="goTasks">全部 ›</text>
+    </view>
+    <view class="period-group" wx:for="{{periodTasks}}" wx:key="period">
+      <view class="period-head" data-index="{{index}}" bindtap="toggleGroup">
+        <view class="period-name">{{item.periodName}}</view>
+        <view class="period-count">{{item.done}}/{{item.total}} <text class="period-arrow">{{item.expanded ? '▾' : '▸'}}</text></view>
+      </view>
+      <block wx:if="{{item.expanded}}">
+        <view class="period-task" wx:for="{{item.tasks}}" wx:for-item="tk" wx:key="id" data-id="{{tk.id}}" bindtap="goTask">
+          <view class="task-main">
+            <view class="task-name">{{tk.name}}</view>
+            <view class="task-area">{{tk.area}}{{tk.building_name ? ' · ' + tk.building_name : ''}}</view>
+          </view>
+          <view class="tag {{tk.status === 'done' ? 'tag-green' : 'tag-orange'}}">
+            {{tk.status === 'done' ? '已完成' : '待处理'}}
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 快捷功能入口 -->
+  <view class="card" wx:if="{{menus.length}}">
+    <view class="card-title">{{txt.quickActions}}</view>
+    <view class="menu-grid">
+      <view class="menu-item" wx:for="{{menus}}" wx:key="key" data-item="{{item}}" bindtap="goModule">
+        <view class="menu-icon">{{item.icon}}</view>
+        <view class="menu-name">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最新隐患 -->
+  <view class="card" wx:if="{{recentHazards.length}}">
+    <view class="card-title">{{txt.recentHazards}}</view>
+    <view class="row-item" wx:for="{{recentHazards}}" wx:key="id" data-id="{{item.id}}" bindtap="goHazardDetail">
+      <view class="hazard-info">
+        <view class="list-item-title">{{item.title}}</view>
+        <view class="list-item-sub">{{item.area}} · {{item.createdAtText}}</view>
+      </view>
+      <view class="tag {{item.level === 'high' ? 'tag-red' : item.level === 'mid' ? 'tag-orange' : 'tag-blue'}}">
+        {{item.level === 'high' ? txt.levelHigh : item.level === 'mid' ? txt.levelMid : txt.levelLow}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 上报隐患快捷 -->
+  <view class="report-fab" bindtap="goHazardForm">＋</view>
+</view>

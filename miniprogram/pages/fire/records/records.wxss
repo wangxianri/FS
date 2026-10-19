@@ -1,0 +1,11 @@
+.rec-list { padding-bottom: 40rpx; }
+.rec-head { display: flex; align-items: flex-start; }
+.rec-info { flex: 1; margin-right: 16rpx; }
+.rec-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8rpx; }
+.rec-count { font-size: 24rpx; color: #999; }
+.rec-detail { margin-top: 16rpx; padding-top: 16rpx; border-top: 1rpx solid #f0f0f0; }
+.rec-item { display: flex; align-items: center; padding: 10rpx 0; }
+.rec-item-name { flex: 1; font-size: 26rpx; color: #333; margin-right: 16rpx; }
+.rec-item-result { font-size: 26rpx; font-weight: 600; }
+.rec-item-result.ok { color: #2e7d32; }
+.rec-item-result.bad { color: #c62828; }

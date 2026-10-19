@@ -1,0 +1,34 @@
+<view class="page">
+  <block wx:if="{{item}}">
+    <view class="card">
+      <view class="cid-title">{{item.name}}</view>
+      <view class="cid-tags">
+        <view class="tag {{item.level === 'high' ? 'tag-red' : item.level === 'mid' ? 'tag-orange' : 'tag-blue'}}">{{item.levelLabel}}</view>
+        <view class="tag tag-gray">{{item.periodLabel}}</view>
+        <view class="tag tag-red" wx:if="{{item.veto}}">⚑ {{txt.veto}}</view>
+      </view>
+      <view class="cid-meta">{{txt.area}}: {{item.area}}</view>
+    </view>
+
+    <view class="card">
+      <view class="cid-section">{{txt.howToCheck}}</view>
+      <view class="cid-text">{{item.how || '-'}}</view>
+    </view>
+    <view class="card">
+      <view class="cid-section">{{txt.standard}}</view>
+      <view class="cid-text">{{item.std || '-'}}</view>
+    </view>
+    <view class="card">
+      <view class="cid-section">{{txt.basis}}</view>
+      <view class="cid-text">{{item.basis || '-'}}</view>
+    </view>
+    <view class="card">
+      <view class="cid-section">{{txt.penalty}}</view>
+      <view class="cid-text">{{item.penalty || '-'}}</view>
+    </view>
+    <view class="card">
+      <view class="cid-section">{{txt.fixMeasure}}</view>
+      <view class="cid-text">{{item.fix || '-'}}</view>
+    </view>
+  </block>
+</view>

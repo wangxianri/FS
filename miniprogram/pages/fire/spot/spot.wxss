@@ -1,0 +1,24 @@
+.tab-bar { display: flex; background: #fff; border-radius: 16rpx; padding: 8rpx; margin-bottom: 20rpx; }
+.tab { flex: 1; text-align: center; padding: 18rpx 0; font-size: 30rpx; color: #666; border-radius: 12rpx; }
+.tab.active { background: #e63b2e; color: #fff; font-weight: 600; }
+.result-bar { display: flex; gap: 20rpx; margin-bottom: 20rpx; }
+.res { flex: 1; text-align: center; padding: 16rpx 0; border-radius: 12rpx; font-size: 28rpx; }
+.res-pass { background: #e8f5e9; color: #2e7d32; }
+.res-fail { background: #fdecea; color: #e63b2e; }
+.spot-item { display: flex; align-items: center; }
+.spot-main { flex: 1; margin-right: 20rpx; }
+.spot-name { font-size: 28rpx; font-weight: 500; line-height: 1.4; }
+.spot-check { font-size: 24rpx; color: #888; margin-top: 8rpx; }
+.spot-toggle {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  border: 2rpx solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #ccc;
+  flex-shrink: 0;
+}
+.spot-toggle.on { background: #2e7d32; border-color: #2e7d32; color: #fff; }

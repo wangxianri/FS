@@ -1,0 +1,12 @@
+<view class="page">
+  <view class="card" wx:for="{{cards}}" wx:key="key">
+    <view class="emg-title">🚨 {{item.title}}</view>
+    <view class="emg-steps">
+      <view class="step" wx:for="{{item.steps}}" wx:for-item="st" wx:for-index="si" wx:key="*this">
+        <view class="step-num">{{si + 1}}</view>
+        <view class="step-text">{{st}}</view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{!cards.length && !loading}}" class="empty">{{txt.noData}}</view>
+</view>

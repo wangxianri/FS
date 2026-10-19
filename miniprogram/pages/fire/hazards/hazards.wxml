@@ -1,0 +1,51 @@
+<view class="page-tab">
+  <!-- 筛选区 -->
+  <view class="filter-panel">
+    <view class="filter-row">
+      <text class="filter-label">等级</text>
+      <scroll-view scroll-x class="filter-scroll" show-scrollbar="{{false}}">
+        <view class="filter-chips">
+          <view wx:for="{{filters}}" wx:key="key"
+                class="filter-chip {{activeLevel === item.key ? 'active' : ''}}"
+                data-key="{{item.key}}" bindtap="onLevel">{{item.label}}</view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="filter-divider"></view>
+
+    <view class="filter-row">
+      <text class="filter-label">状态</text>
+      <scroll-view scroll-x class="filter-scroll" show-scrollbar="{{false}}">
+        <view class="filter-chips">
+          <view wx:for="{{statusFilters}}" wx:key="key"
+                class="filter-chip {{activeStatus === item.key ? 'active' : ''}}"
+                data-key="{{item.key}}" bindtap="onStatus">{{item.label}}</view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 列表 -->
+  <view wx:if="{{hazards.length}}" class="hazard-list">
+    <view class="list-item hazard-card {{item.status === 'closed' ? 'hazard-closed' : ''}}" wx:for="{{hazards}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="hazard-main">
+        <view class="list-item-title">{{item.title}}</view>
+        <view class="list-item-sub">{{item.createdAtText}}</view>
+      </view>
+      <view class="hazard-tags">
+        <view class="tag {{item.level === 'high' ? 'tag-red' : item.level === 'mid' ? 'tag-orange' : 'tag-blue'}}">{{item.levelLabel}}</view>
+        <view class="tag {{item.status === 'closed' ? 'tag-green' : 'tag-red'}}">{{item.statusLabel}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!hazards.length && !loading}}" class="empty">
+    <view style="font-size:64rpx;">📭</view>
+    <view style="margin-top:16rpx;">{{noData}}</view>
+  </view>
+
+  <view class="fab" bindtap="goReport">
+    <text>+</text>
+  </view>
+</view>

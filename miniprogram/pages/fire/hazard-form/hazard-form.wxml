@@ -1,0 +1,112 @@
+<view class="page">
+  <view class="header">
+    <view class="header-icon">⚠️</view>
+    <view class="header-title">{{txt.pageTitle}}</view>
+    <view class="header-tip">请填写隐患信息，带 <text class="star">*</text> 为必填</view>
+  </view>
+
+  <view class="card form-card">
+    <!-- 隐患标题 -->
+    <view class="form-section">
+      <view class="section-label">
+        <text class="star">*</text>
+        <text>{{txt.hazardTitle}}</text>
+      </view>
+      <input class="form-input" placeholder="请输入隐患标题" placeholder-class="placeholder"
+             bindinput="onTitle" value="{{title}}" />
+    </view>
+
+    <!-- 所属单位 / 楼宇 / 场所 -->
+    <view class="form-section">
+      <view class="section-label">
+        <text>{{txt.owner}}</text>
+        <text class="section-sub">（选填，便于对应到单位/楼宇/场所）</text>
+      </view>
+      <search-picker options="{{units}}" labelKey="name" valueKey="id"
+        placeholder="请选择所属单位" selectedLabel="{{unitIndex ? units[unitIndex].name : ''}}"
+        bind:change="onUnit" />
+      <search-picker options="{{blds}}" labelKey="name" valueKey="id"
+        placeholder="请选择所属楼宇" selectedLabel="{{bldIndex ? blds[bldIndex].name : ''}}"
+        bind:change="onBld" />
+      <search-picker options="{{plcs}}" labelKey="name" valueKey="id"
+        placeholder="请选择所属场所" selectedLabel="{{plcIndex ? plcs[plcIndex].name : ''}}"
+        bind:change="onPlc" />
+    </view>
+
+    <!-- 区域 -->
+    <view class="form-section">
+      <view class="section-label">
+        <text>{{txt.area}}</text>
+      </view>
+      <input class="form-input" placeholder="请输入隐患所在区域" placeholder-class="placeholder"
+             bindinput="onArea" value="{{area}}" />
+    </view>
+
+    <!-- 隐患等级 -->
+    <view class="form-section">
+      <view class="section-label">
+        <text class="star">*</text>
+        <text>{{txt.hazardLevel}}</text>
+      </view>
+      <view class="level-group">
+        <view class="level-item {{level === 'high' ? 'level-high' : ''}}" data-level="high" bindtap="onLevel">
+          <text class="level-dot"></text>
+          <text>{{txt.levelHigh}}</text>
+        </view>
+        <view class="level-item {{level === 'mid' ? 'level-mid' : ''}}" data-level="mid" bindtap="onLevel">
+          <text class="level-dot"></text>
+          <text>{{txt.levelMid}}</text>
+        </view>
+        <view class="level-item {{level === 'low' ? 'level-low' : ''}}" data-level="low" bindtap="onLevel">
+          <text class="level-dot"></text>
+          <text>{{txt.levelLow}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 隐患描述 -->
+    <view class="form-section">
+      <view class="section-label">
+        <text>{{txt.hazardDesc}}</text>
+      </view>
+      <textarea class="form-textarea" placeholder="请描述隐患具体情况、位置、可能造成的风险等"
+                placeholder-class="placeholder" maxlength="500"
+                bindinput="onDesc" value="{{desc}}" />
+      <view class="char-count">{{desc.length || 0}}/500</view>
+    </view>
+
+    <!-- 整改期限 -->
+    <view class="form-section">
+      <view class="section-label">
+        <text>{{txt.deadline}}</text>
+      </view>
+      <view class="days-row">
+        <input class="form-input days-input" type="number" placeholder="3" placeholder-class="placeholder"
+               bindinput="onDays" value="{{days}}" />
+        <text class="days-unit">{{txt.days}}</text>
+      </view>
+    </view>
+
+    <!-- 照片 -->
+    <view class="form-section last">
+      <view class="section-label">
+        <text>{{txt.photos}}</text>
+        <text class="section-sub">（选填，最多 9 张）</text>
+      </view>
+      <view class="photo-grid">
+        <view class="photo-wrap" wx:for="{{photos}}" wx:key="index">
+          <image class="photo-img" src="{{item}}" mode="aspectFill" bindtap="previewPhoto" data-index="{{index}}" />
+          <view class="photo-del" data-index="{{index}}" catchtap="removePhoto">
+            <text class="del-icon">✕</text>
+          </view>
+        </view>
+        <view class="photo-add" bindtap="onPhoto" wx:if="{{photos.length < 9}}">
+          <text class="add-icon">+</text>
+          <text class="add-text">添加照片</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="btn-primary submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">{{submitting ? txt.loading : txt.submit}}</view>
+</view>

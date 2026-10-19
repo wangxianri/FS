@@ -1,0 +1,49 @@
+<view class="page">
+  <view class="tab-bar">
+    <view class="tab {{mode === 'ten' ? 'active' : ''}}" data-mode="ten" bindtap="onMode">{{txt.spotCheck}}</view>
+    <view class="tab {{mode === 'deep' ? 'active' : ''}}" data-mode="deep" bindtap="onMode">{{txt.deepCheck}}</view>
+  </view>
+
+  <view class="form-item">
+    <text class="form-label">* {{txt.spotSite}}</text>
+    <input class="input" bindinput="onSiteName" value="{{siteName}}" placeholder="{{txt.spotSite}}" />
+  </view>
+
+  <!-- 所属单位/楼宇/场所 -->
+  <view class="form-item">
+    <text class="form-label">{{txt.owner}}</text>
+    <search-picker options="{{org.units}}" labelKey="name" valueKey="id"
+      placeholder="请选择所属单位" selectedLabel="{{org.units[org.unitIndex] ? org.units[org.unitIndex].name : ''}}"
+      bind:change="onOrgUnit" />
+  </view>
+  <view class="form-item">
+    <search-picker options="{{org.blds}}" labelKey="name" valueKey="id"
+      placeholder="请选择所属楼宇" selectedLabel="{{org.blds[org.bldIndex] ? org.blds[org.bldIndex].name : ''}}"
+      bind:change="onOrgBld" />
+  </view>
+  <view class="form-item">
+    <search-picker options="{{org.plcs}}" labelKey="name" valueKey="id"
+      placeholder="请选择所属场所" selectedLabel="{{org.plcs[org.plcIndex] ? org.plcs[org.plcIndex].name : ''}}"
+      bind:change="onOrgPlc" />
+  </view>
+
+  <view class="result-bar">
+    <view class="res res-pass">✓ {{txt.spotPass}}: {{passCount}}</view>
+    <view class="res res-fail">✗ {{txt.spotFail}}: {{failCount}}</view>
+  </view>
+
+  <view class="card" wx:for="{{items}}" wx:key="key">
+    <view class="spot-item">
+      <view class="spot-main">
+        <view class="spot-name">{{index + 1}}. {{item.name}}</view>
+        <view class="spot-check">{{item.check}}</view>
+        <view class="tag tag-red" wx:if="{{item.veto}}">⚑ {{txt.veto}}</view>
+      </view>
+      <view class="spot-toggle {{item.pass ? 'on' : ''}}" data-index="{{index}}" bindtap="onToggle">
+        {{item.pass ? '✓' : '○'}}
+      </view>
+    </view>
+  </view>
+
+  <view class="btn-primary {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">{{submitting ? txt.loading : txt.submit}}</view>
+</view>

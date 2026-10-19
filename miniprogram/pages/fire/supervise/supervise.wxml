@@ -1,0 +1,38 @@
+<view class="page">
+  <view wx:if="{{list.length}}" class="sup-list">
+    <view class="list-item" wx:for="{{list}}" wx:key="id">
+      <view class="sup-info">
+        <view class="list-item-title">{{item.hazard_title || '#' + item.hazard_id}}</view>
+        <view class="list-item-sub">{{txt.assignTo}}: {{item.assignee_name || '-'}} · {{txt.deadline}}: {{item.deadline}}</view>
+        <view class="list-item-sub" wx:if="{{item.note}}">{{item.note}}</view>
+      </view>
+      <view class="tag {{item.status === 'done' ? 'tag-green' : item.status === 'assigned' ? 'tag-orange' : 'tag-blue'}}">{{item.statusLabel}}</view>
+    </view>
+  </view>
+  <view wx:if="{{!list.length && !loading}}" class="empty">
+    <view style="font-size:64rpx;">📮</view>
+    <view style="margin-top:16rpx;">{{txt.noData}}</view>
+  </view>
+
+  <view class="fab" bindtap="openForm">＋</view>
+
+  <view class="mask" wx:if="{{showForm}}" bindtap="closeForm"></view>
+  <view class="sheet" wx:if="{{showForm}}">
+    <view class="sheet-title">{{txt.supervise}}</view>
+    <search-picker options="{{openHazards}}" labelKey="title" valueKey="id"
+      placeholder="{{txt.hazards}}" selectedLabel="" bind:change="onHazard" />
+    <view class="form-item">
+      <input class="input" placeholder="{{txt.assignTo}}" bindinput="onAssignee" value="{{assigneeName}}" />
+    </view>
+    <view class="form-item">
+      <input class="input" placeholder="{{txt.deadline}} (YYYY-MM-DD)" bindinput="onDeadline" value="{{deadline}}" />
+    </view>
+    <view class="form-item">
+      <textarea class="textarea" placeholder="{{txt.note}}" bindinput="onNote" value="{{note}}" />
+    </view>
+    <view class="sheet-btns">
+      <view class="btn-ghost" bindtap="closeForm">{{txt.cancel}}</view>
+      <view class="btn-primary" bindtap="onSubmit">{{txt.submit}}</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,5 @@
+.cid-title { font-size: 34rpx; font-weight: 600; line-height: 1.5; }
+.cid-tags { display: flex; gap: 12rpx; margin-top: 16rpx; flex-wrap: wrap; }
+.cid-meta { font-size: 26rpx; color: #999; margin-top: 16rpx; }
+.cid-section { font-size: 28rpx; font-weight: 600; color: #e63b2e; margin-bottom: 12rpx; }
+.cid-text { font-size: 28rpx; color: #555; line-height: 1.7; }

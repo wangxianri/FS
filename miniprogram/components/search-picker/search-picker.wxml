@@ -1,0 +1,21 @@
+<view class="sp">
+  <view class="sp-trigger" bindtap="open">
+    <view class="sp-value {{selectedLabel ? '' : 'sp-placeholder'}}">{{selectedLabel || placeholder}} ▾</view>
+  </view>
+
+  <view class="sp-mask" wx:if="{{visible}}" bindtap="close" catchtouchmove="prevent"></view>
+  <view class="sp-popup" wx:if="{{visible}}">
+    <view class="sp-head">
+      <view class="sp-search">
+        <input class="sp-input" placeholder="搜索" placeholder-class="sp-ph" bindinput="onSearch" value="{{keyword}}" focus="{{visible}}" confirm-type="search" />
+      </view>
+      <view class="sp-cancel" bindtap="close">取消</view>
+    </view>
+    <scroll-view class="sp-list" scroll-y>
+      <view class="sp-item" wx:for="{{filtered}}" wx:key="__index" data-index="{{index}}" bindtap="onSelect">
+        {{item.__label}}
+      </view>
+      <view wx:if="{{!filtered.length}}" class="sp-empty">无匹配结果</view>
+    </scroll-view>
+  </view>
+</view>

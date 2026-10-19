@@ -1,0 +1,201 @@
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #e53935 0%, #c62828 42%, #f5f6fa 42%);
+  padding: 0 48rpx 80rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 品牌区 */
+.brand {
+  padding: 100rpx 0 70rpx;
+  text-align: center;
+  color: #fff;
+}
+.brand-logo {
+  font-size: 120rpx;
+  line-height: 1;
+  margin-bottom: 24rpx;
+}
+.brand-name {
+  font-size: 48rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+}
+.brand-slogan {
+  margin-top: 16rpx;
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 登录卡片 */
+.form-card {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 48rpx 40rpx 56rpx;
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  width: 100%;
+}
+.form-title {
+  text-align: center;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 32rpx;
+}
+
+/* 收集手机号的用途告知（合规要求） */
+.login-tip {
+  font-size: 23rpx;
+  color: #8a8f99;
+  line-height: 1.6;
+  background: #f7f8fa;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  margin-bottom: 32rpx;
+}
+
+/* 字段 */
+.field {
+  margin-bottom: 32rpx;
+}
+.field-label {
+  display: block;
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+.field-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f7f8fa;
+  border: 1rpx solid #e5e6eb;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  height: 104rpx;
+  box-sizing: border-box;
+}
+.field-input input {
+  flex: 1;
+  height: 100%;
+  font-size: 32rpx;
+  color: #333;
+}
+.placeholder {
+  color: #b0b3bf;
+  font-size: 30rpx;
+}
+.pwd-row { position: relative; }
+.pwd-toggle {
+  font-size: 36rpx;
+  padding: 12rpx;
+  margin-right: -12rpx;
+}
+
+/* 登录按钮 */
+.btn-login {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100rpx;
+  background: #e53935;
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 600;
+  border-radius: 16rpx;
+  margin-top: 16rpx;
+}
+.btn-login text {
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.btn-login.disabled { background: #f0a09a; }
+
+/* 分隔线 */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 40rpx 0 32rpx;
+}
+.divider-line {
+  flex: 1;
+  height: 1rpx;
+  background: #e5e6eb;
+}
+.divider-text {
+  padding: 0 24rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 微信登录 */
+.btn-wx {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100rpx;
+  background: #07c160;
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 600;
+  border-radius: 16rpx;
+}
+.btn-wx text { color: #fff; font-size: 34rpx; font-weight: 600; line-height: 1.2; }
+.btn-wx.disabled { background: #8ddba6; }
+.wx-icon { margin-right: 12rpx; font-size: 36rpx; }
+
+/* 底部链接 */
+.links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40rpx;
+  padding: 0 10rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+.link {
+  color: #666;
+  font-size: 28rpx;
+}
+
+/* 隐私政策 / 用户协议 同意 */
+.agree-row {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 24rpx;
+  margin-bottom: 4rpx;
+}
+.agree-box {
+  width: 36rpx;
+  height: 36rpx;
+  border: 2rpx solid #c8c9cc;
+  border-radius: 50%;
+  margin-right: 14rpx;
+  margin-top: 2rpx;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #fff;
+  box-sizing: border-box;
+}
+.agree-box.on {
+  background: #e63b2e;
+  border-color: #e63b2e;
+}
+.agree-txt {
+  flex: 1;
+  font-size: 24rpx;
+  color: #888;
+  line-height: 1.5;
+}
+.agree-link { color: #e63b2e; }

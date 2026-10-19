@@ -1,0 +1,57 @@
+.filter-panel {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx 0;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  padding: 0 24rpx;
+}
+.filter-label {
+  flex-shrink: 0;
+  font-size: 28rpx;
+  color: #999;
+  margin-right: 20rpx;
+  width: 56rpx;
+}
+.filter-scroll {
+  flex: 1;
+  white-space: nowrap;
+}
+.filter-chips {
+  display: inline-flex;
+  gap: 16rpx;
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10rpx 26rpx;
+  background: #f5f6fa;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  color: #666;
+  border: 1rpx solid transparent;
+  transition: all 0.2s;
+}
+.filter-chip.active {
+  background: #e63b2e;
+  color: #fff;
+  font-weight: 500;
+}
+
+.filter-divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin: 20rpx 24rpx;
+}
+
+.task-list { margin-top: 8rpx; }
+.task-card {
+  align-items: flex-start;
+}
+.task-main { flex: 1; margin-right: 16rpx; }

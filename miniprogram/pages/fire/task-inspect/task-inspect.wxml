@@ -1,0 +1,49 @@
+<view class="page">
+  <!-- 任务信息 -->
+  <view class="card" wx:if="{{task}}">
+    <view class="card-title">{{task.name}}</view>
+    <view class="list-item-sub">{{task.area}} · {{task.periodName}} · {{task.due_date}}</view>
+  </view>
+
+  <!-- 检查项 -->
+  <view class="card" wx:if="{{checkItems.length}}">
+    <view class="card-title">{{txt.checkItems}} ({{checkItems.length}})</view>
+    <view class="item" wx:for="{{checkItems}}" wx:key="key">
+      <view class="item-name">{{index + 1}}. {{item.name}}</view>
+      <view class="item-meta" wx:if="{{item.veto}}">
+        <text class="tag tag-red">⚑ {{txt.veto}}</text>
+        <text class="item-basis">{{item.basis}}</text>
+      </view>
+      <view class="item-basis" wx:else>{{item.basis}}</view>
+      <view class="result-row">
+        <view class="result-btn pass {{results[item.key] === 'pass' ? 'on' : ''}}"
+              data-key="{{item.key}}" data-val="pass" bindtap="onResult">✓ {{txt.pass}}</view>
+        <view class="result-btn fail {{results[item.key] === 'fail' ? 'on' : ''}}"
+              data-key="{{item.key}}" data-val="fail" bindtap="onResult">✗ {{txt.fail}}</view>
+      </view>
+      <input class="input note-input" placeholder="{{txt.note}}" data-key="{{item.key}}"
+             bindinput="onNote" value="{{notes[item.key]}}" />
+    </view>
+  </view>
+
+  <!-- 隐患快捷上报 -->
+  <view class="card" wx:if="{{hasFail}}">
+    <view class="card-title">{{txt.quickReport}}</view>
+    <view class="form-item">
+      <input class="input" placeholder="{{txt.hazardTitle}}" bindinput="onHazardTitle" value="{{hazardTitle}}" />
+    </view>
+    <view class="level-row">
+      <view class="level-btn {{hazardLevel === 'high' ? 'on' : ''}}" data-level="high"
+            bindtap="onHazardLevel">{{txt.levelHigh}}</view>
+      <view class="level-btn {{hazardLevel === 'mid' ? 'on' : ''}}" data-level="mid"
+            bindtap="onHazardLevel">{{txt.levelMid}}</view>
+      <view class="level-btn {{hazardLevel === 'low' ? 'on' : ''}}" data-level="low"
+            bindtap="onHazardLevel">{{txt.levelLow}}</view>
+    </view>
+    <view class="form-item">
+      <textarea class="textarea" placeholder="{{txt.hazardDesc}}" bindinput="onHazardDesc" value="{{hazardDesc}}" />
+    </view>
+  </view>
+
+  <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">{{submitting ? txt.loading : txt.submitInspect}}</view>
+</view>

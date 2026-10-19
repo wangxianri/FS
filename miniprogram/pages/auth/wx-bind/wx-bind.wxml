@@ -1,0 +1,51 @@
+<view class="bind-page">
+  <view class="title">💬 {{txt.bindWechat}}</view>
+  <view class="use-tip">{{txt.phoneUseTip}}</view>
+  <view class="form">
+    <view class="mode-tabs">
+      <view class="mode-tab {{mode === 'code' ? 'active' : ''}}" bindtap="switchMode">{{txt.phoneLogin}}</view>
+      <view class="mode-tab {{mode === 'register' ? 'active' : ''}}" bindtap="switchMode">{{txt.registerAccount}}</view>
+    </view>
+
+    <!-- 绑定已有账号 -->
+    <block wx:if="{{mode === 'code'}}">
+      <view class="form-item">
+        <input class="input" type="number" maxlength="11" placeholder="{{txt.pleaseEnterPhone}}" bindinput="onPhone" />
+      </view>
+      <view class="form-item">
+        <input class="input" password placeholder="{{txt.pleaseEnterPassword}}" bindinput="onPassword" />
+      </view>
+    </block>
+
+    <!-- 注册新账号 -->
+    <block wx:else>
+      <view class="form-item">
+        <input class="input" type="number" maxlength="11" placeholder="{{txt.pleaseEnterPhone}}" bindinput="onPhone" />
+      </view>
+      <view class="form-item">
+        <input class="input" placeholder="{{txt.pleaseEnterName}}" bindinput="onName" />
+      </view>
+      <view class="form-item code-row">
+        <input class="input" placeholder="{{txt.pleaseEnterCode}}" bindinput="onCode" />
+        <view class="btn-code {{countdown ? 'disabled' : ''}}" bindtap="sendCode">{{countdown ? countdown + 's' : txt.getCode}}</view>
+      </view>
+      <view class="form-item">
+        <input class="input" password placeholder="{{txt.pleaseEnterPassword}}" bindinput="onPassword" />
+      </view>
+    </block>
+
+    <view class="agree-row">
+      <view class="agree-box {{agreed ? 'on' : ''}}" bindtap="toggleAgree">
+        <text wx:if="{{agreed}}">✓</text>
+      </view>
+      <view class="agree-txt">
+        我已阅读并同意
+        <text class="agree-link" catchtap="goAgreement">《用户协议》</text>
+        与
+        <text class="agree-link" catchtap="goPrivacy">《隐私政策》</text>
+      </view>
+    </view>
+
+    <view class="btn-primary {{loading ? 'disabled' : ''}}" bindtap="onBind">{{loading ? txt.loading : txt.confirm}}</view>
+  </view>
+</view>

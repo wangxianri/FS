@@ -1,0 +1,18 @@
+<view class="page">
+  <view class="card" wx:for="{{guides}}" wx:key="key">
+    <view class="eq-head" data-index="{{index}}" bindtap="toggle">
+      <view class="eq-name">🛠️ {{item.name}}</view>
+      <view class="eq-arrow">{{expanded[index] ? '▲' : '▼'}}</view>
+    </view>
+    <view class="eq-body" wx:if="{{expanded[index]}}">
+      <view class="eq-sec"><view class="eq-label">{{txt.standard}}</view><view class="eq-text">{{item.normal}}</view></view>
+      <view class="eq-sec"><view class="eq-label">{{txt.operate}}</view>
+        <view class="eq-text" wx:for="{{item.operate}}" wx:for-item="op" wx:key="*this">· {{op}}</view>
+      </view>
+      <view class="eq-sec" wx:if="{{item.forbid.length}}"><view class="eq-label forbid">✕ {{txt.forbid}}</view>
+        <view class="eq-text" wx:for="{{item.forbid}}" wx:for-item="fb" wx:key="*this">· {{fb}}</view>
+      </view>
+      <view class="eq-sec" wx:if="{{item.params}}"><view class="eq-label">{{txt.param}}</view><view class="eq-text">{{item.params}}</view></view>
+    </view>
+  </view>
+</view>

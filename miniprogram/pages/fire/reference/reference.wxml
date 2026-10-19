@@ -1,0 +1,35 @@
+<view class="page">
+  <view class="tab-bar">
+    <view class="tab {{tab === 'law' ? 'active' : ''}}" data-tab="law" bindtap="onTab">{{txt.lawRegulations}}</view>
+    <view class="tab {{tab === 'quant' ? 'active' : ''}}" data-tab="quant" bindtap="onTab">{{txt.quantRules}}</view>
+  </view>
+
+  <!-- 法规对照 -->
+  <block wx:if="{{tab === 'law'}}">
+    <view class="search-bar">
+      <input class="input search-input" placeholder="{{txt.search}}..." bindinput="onKeyword" value="{{keyword}}" />
+    </view>
+    <view wx:if="{{laws.length}}" class="law-list">
+      <view class="card" wx:for="{{laws}}" wx:key="id">
+        <view class="law-name">{{item.name}}</view>
+        <view class="tag tag-blue" wx:if="{{item.category}}">{{item.category}}</view>
+        <view class="law-basis" wx:if="{{item.basis}}">{{item.basis}}</view>
+        <view class="law-penalty" wx:if="{{item.penalty}}">⚠ {{txt.penalty}}: {{item.penalty}}</view>
+      </view>
+    </view>
+    <view wx:if="{{!laws.length && !loading}}" class="empty">{{txt.noData}}</view>
+  </block>
+
+  <!-- 量化标准 -->
+  <block wx:if="{{tab === 'quant'}}">
+    <view class="quant-list" wx:if="{{quants.length}}">
+      <view class="card" wx:for="{{quants}}" wx:key="name">
+        <view class="law-name">{{item.name}}</view>
+        <view class="law-basis">{{txt.standard}}: {{item.std}}</view>
+        <view class="law-basis">{{txt.howToCheck}}: {{item.measure}}</view>
+        <view class="law-basis">📘 {{txt.basis}}: {{item.basis}}</view>
+        <view class="law-penalty">✅ {{txt.judge}}: {{item.judge}}</view>
+      </view>
+    </view>
+  </block>
+</view>

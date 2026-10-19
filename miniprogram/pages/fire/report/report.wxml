@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="card">
+    <picker mode="date" value="{{date}}" bindchange="onDate">
+      <view class="date-picker">📅 {{date}} ▾</view>
+    </picker>
+  </view>
+
+  <view class="card">
+    <view class="card-title">{{txt.todayTasks}} ({{tasks.length}})</view>
+    <view class="row" wx:for="{{tasks}}" wx:key="id">
+      <view class="row-title">{{item.name}}</view>
+      <view class="tag {{item.status === 'done' ? 'tag-green' : 'tag-orange'}}">
+        {{item.status === 'done' ? txt.completed : txt.pending}}
+      </view>
+    </view>
+    <view wx:if="{{!tasks.length}}" class="empty-mini">{{txt.noData}}</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">{{txt.hazards}} ({{hazards.length}})</view>
+    <view class="row" wx:for="{{hazards}}" wx:key="id">
+      <view class="row-title">{{item.title}}</view>
+      <view class="tag {{item.level === 'high' ? 'tag-red' : item.level === 'mid' ? 'tag-orange' : 'tag-blue'}}">
+        {{item.level === 'high' ? txt.levelHigh : item.level === 'mid' ? txt.levelMid : txt.levelLow}}
+      </view>
+    </view>
+    <view wx:if="{{!hazards.length}}" class="empty-mini">{{txt.noData}}</view>
+  </view>
+</view>

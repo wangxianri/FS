@@ -1,0 +1,48 @@
+<view class="page">
+  <view wx:if="{{list.length}}" class="notice-list">
+    <view class="list-item" wx:for="{{list}}" wx:key="id">
+      <view class="notice-info">
+        <view class="list-item-title">{{item.title}}</view>
+        <view class="list-item-sub" wx:if="{{item.content}}">{{item.content}}</view>
+        <view class="list-item-sub">{{txt.targetUnit}}: {{item.unit_name}} · {{txt.deadline}}: {{item.deadline || '-'}}</view>
+        <view class="list-item-sub">{{item.creator_name || ''}} · {{item.createdAtText}}</view>
+      </view>
+      <view class="notice-side">
+        <view class="tag {{item.status === 'active' ? 'tag-orange' : item.status === 'done' ? 'tag-green' : 'tag-gray'}}">{{item.statusName}}</view>
+        <view class="notice-actions" wx:if="{{canManage}}">
+          <text class="notice-act" wx:if="{{item.status === 'active'}}" data-id="{{item.id}}" data-status="done" bindtap="onStatus">{{txt.done}}</text>
+          <text class="notice-act" wx:if="{{item.status === 'active'}}" data-id="{{item.id}}" data-status="cancelled" bindtap="onStatus">{{txt.cancelled}}</text>
+          <text class="notice-act notice-del" data-id="{{item.id}}" data-title="{{item.title}}" bindtap="onDelete">{{txt.delete}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!list.length && !loading}}" class="empty">
+    <view style="font-size:64rpx;">📢</view>
+    <view style="margin-top:16rpx;">{{txt.noData}}</view>
+  </view>
+
+  <view class="fab" wx:if="{{canManage}}" bindtap="openForm">＋</view>
+
+  <view class="mask" wx:if="{{showForm}}" bindtap="closeForm"></view>
+  <view class="sheet" wx:if="{{showForm}}">
+    <view class="sheet-title">{{txt.newNotice}}</view>
+    <view class="form-item">
+      <input class="input ph" placeholder-class="ph" placeholder="{{txt.noticeTitle}}" bindinput="onTitle" value="{{title}}" />
+    </view>
+    <view class="form-item">
+      <textarea class="textarea ph" placeholder-class="ph" placeholder="{{txt.noticeContent}}" bindinput="onContent" value="{{content}}" />
+    </view>
+    <search-picker options="{{units}}" labelKey="name" valueKey="id"
+      placeholder="{{txt.targetUnit}}" selectedLabel="{{units[unitIndex] ? units[unitIndex].name : ''}}"
+      bind:change="onUnit" />
+    <view class="form-item">
+      <input class="input ph" placeholder-class="ph" placeholder="{{txt.deadline}} (YYYY-MM-DD)" bindinput="onDeadline" value="{{deadline}}" />
+    </view>
+    <view class="sheet-btns">
+      <view class="btn-ghost btn-text" bindtap="closeForm" style="color:#333;">{{txt.cancel}}</view>
+      <view class="btn-primary btn-text" bindtap="onSubmit" style="color:#fff;">{{txt.submit}}</view>
+    </view>
+  </view>
+</view>

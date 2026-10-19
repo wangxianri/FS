@@ -1,0 +1,39 @@
+<view class="page">
+  <view class="tab-bar">
+    <view class="tab {{tab === 'profile' ? 'active' : ''}}" data-tab="profile" bindtap="onTab">{{txt.myProfile}}</view>
+    <view class="tab {{tab === 'password' ? 'active' : ''}}" data-tab="password" bindtap="onTab">{{txt.changePassword}}</view>
+  </view>
+
+  <block wx:if="{{tab === 'profile'}}">
+    <view class="card profile-card">
+      <view class="pf-avatar">{{user.name ? user.name[0] : '🙂'}}</view>
+      <view class="pf-row">
+        <view class="pf-label">{{txt.name}}</view>
+        <view class="pf-value">{{user.name || '—'}}</view>
+      </view>
+      <view class="pf-row">
+        <view class="pf-label">{{txt.phoneUser}}</view>
+        <view class="pf-value">{{user.phone || '—'}}</view>
+      </view>
+      <view class="pf-row">
+        <view class="pf-label">{{txt.role}}</view>
+        <view class="pf-value">{{user.roleName || user.role || '—'}}</view>
+      </view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="card password-card">
+      <view class="form-item">
+        <input class="input" password placeholder="{{txt.oldPassword}}" bindinput="onOld" value="{{oldPassword}}" />
+      </view>
+      <view class="form-item">
+        <input class="input" password placeholder="{{txt.newPassword}}" bindinput="onNew" value="{{newPassword}}" />
+      </view>
+      <view class="form-item">
+        <input class="input" password placeholder="{{txt.confirmPassword}}" bindinput="onConfirm" value="{{confirmPassword}}" />
+      </view>
+      <view class="btn-primary {{submitting ? 'disabled' : ''}}" bindtap="onChangePassword">{{submitting ? txt.loading : txt.confirm}}</view>
+    </view>
+  </block>
+</view>

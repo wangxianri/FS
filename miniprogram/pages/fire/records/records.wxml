@@ -1,0 +1,28 @@
+<view class="page">
+  <view wx:if="{{list.length}}" class="rec-list">
+    <view class="list-item" wx:for="{{list}}" wx:key="id">
+      <view class="rec-head" data-index="{{index}}" bindtap="toggle">
+        <view class="rec-info">
+          <view class="list-item-title">{{item.site_name || ('#' + item.id)}}</view>
+          <view class="list-item-sub">{{item.modeName}} · {{item.user_name}} · {{item.createdAtText}}</view>
+          <view class="list-item-sub" wx:if="{{item.conclusion}}">{{txt.spotConclusion}}: {{item.conclusion}}</view>
+        </view>
+        <view class="rec-side">
+          <view class="tag {{item.result === '合格' ? 'tag-green' : item.result === '需整改' ? 'tag-orange' : 'tag-red'}}">{{item.result}}</view>
+          <view class="rec-count">{{item.pass_count}}/{{item.pass_count + item.fail_count}}</view>
+        </view>
+      </view>
+      <view class="rec-detail" wx:if="{{expanded[index]}}">
+        <view class="rec-item" wx:for="{{item.items}}" wx:for-item="it" wx:key="index">
+          <view class="rec-item-name">{{it.name}}</view>
+          <view class="rec-item-result {{it.pass ? 'ok' : 'bad'}}">{{it.pass ? '✓' : '✗'}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!list.length && !loading}}" class="empty">
+    <view style="font-size:64rpx;">🗂️</view>
+    <view style="margin-top:16rpx;">{{txt.noData}}</view>
+  </view>
+</view>

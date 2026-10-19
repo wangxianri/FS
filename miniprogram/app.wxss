@@ -1,0 +1,257 @@
+/* app.wxss - 全局样式 */
+page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #f5f6fa;
+  font-size: 28rpx;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 通用容器 */
+.page {
+  padding: 24rpx;
+  padding-bottom: 140rpx;
+}
+.page-tab {
+  padding: 24rpx;
+  padding-bottom: 160rpx;
+}
+
+/* 卡片 */
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  overflow: visible;
+}
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  color: #111;
+}
+.card-desc {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 主色按钮（flex 居中，与已验证可用的 .type-item 同模式） */
+.btn-primary,
+button.btn-primary,
+button[type="default"].btn-primary {
+  background: #e63b2e !important;
+  color: #fff !important;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  height: 88rpx;
+  margin: 0;
+  border: none;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary text {
+  color: #fff !important;
+  font-size: 30rpx;
+  font-weight: 500;
+  line-height: 1.2;
+}
+button.btn-primary::after,
+button[type="default"].btn-primary::after { border: none !important; }
+.btn-primary.disabled,
+.btn-primary[disabled],
+button.btn-primary[disabled],
+button[type="default"].btn-primary[disabled],
+button.btn-primary.disabled,
+button[type="default"].btn-primary.disabled {
+  background: #f0a09a !important;
+  color: #fff !important;
+  opacity: 0.9;
+}
+
+.btn-outline,
+button.btn-outline,
+button[type="default"].btn-outline {
+  background: #fff !important;
+  color: #e63b2e !important;
+  border: 1rpx solid #e63b2e;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  height: 80rpx;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-outline text {
+  color: #e63b2e !important;
+  font-size: 30rpx;
+  font-weight: 500;
+  line-height: 1.2;
+}
+button.btn-outline::after,
+button[type="default"].btn-outline::after { border: none !important; }
+
+.btn-ghost,
+button.btn-ghost,
+button[type="default"].btn-ghost {
+  background: #f0f0f0 !important;
+  color: #333 !important;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  height: 72rpx;
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-ghost text {
+  color: #333 !important;
+  font-size: 28rpx;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* 可搜索选择器组件（全局默认间距） */
+search-picker {
+  display: block;
+  margin-bottom: 20rpx;
+}
+button.btn-ghost::after,
+button[type="default"].btn-ghost::after { border: none !important; }
+
+/* 表单 */
+.form-item {
+  margin-bottom: 28rpx;
+}
+.form-label {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 12rpx;
+  display: block;
+}
+.input {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  height: 88rpx;
+  border: 1rpx solid #e5e5e5;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 30rpx;
+  color: #333;
+}
+.picker {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  border: 1rpx solid #e5e5e5;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 30rpx;
+  color: #333;
+}
+.textarea {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  border: 1rpx solid #e5e5e5;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 30rpx;
+  color: #333;
+  min-height: 160rpx;
+}
+
+/* 单位/楼宇/场所 三级选择 */
+.form-item .picker { width: 100%; box-sizing: border-box; }
+.org-picker { margin-bottom: 20rpx; }
+.org-picker.placeholder view { color: #bbb; }
+
+/* 标签 */
+.tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  margin-right: 10rpx;
+}
+.tag-red { background: #fdecea; color: #e63b2e; }
+.tag-orange { background: #fff3e0; color: #f57c00; }
+.tag-green { background: #e8f5e9; color: #2e7d32; }
+.tag-blue { background: #e3f2fd; color: #1565c0; }
+.tag-gray { background: #f0f0f0; color: #666; }
+
+/* 列表 */
+.list-item {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.list-item-title {
+  font-size: 30rpx;
+  font-weight: 500;
+}
+.list-item-sub {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #bbb;
+  font-size: 28rpx;
+}
+
+/* 分段筛选 */
+.filter-bar {
+  display: flex;
+  gap: 16rpx;
+  overflow-x: auto;
+  padding-bottom: 16rpx;
+  white-space: nowrap;
+}
+.filter-chip {
+  padding: 10rpx 28rpx;
+  background: #fff;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  color: #666;
+  border: 1rpx solid #eee;
+  flex-shrink: 0;
+}
+.filter-chip.active {
+  background: #e63b2e;
+  color: #fff;
+  border-color: #e63b2e;
+}
+
+/* 状态点 */
+.dot {
+  display: inline-block;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  margin-right: 8rpx;
+}

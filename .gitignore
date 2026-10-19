@@ -1,0 +1,28 @@
+# WeChat Mini Program
+miniprogram/project.config.json
+miniprogram/project.private.config.json
+miniprogram/dist/
+miniprogram/build/
+miniprogram/node_modules/
+miniprogram/yarn.lock
+miniprogram/package-lock.json
+
+# Backend
+backend/node_modules/
+backend/.env
+backend/*.log
+
+# Admin
+fs-admin/node_modules/
+fs-admin/dist/
+fs-admin/.env
+
+# Common
+*.log
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+.wxCache/

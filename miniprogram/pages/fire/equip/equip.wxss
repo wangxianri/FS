@@ -1,0 +1,8 @@
+.eq-head { display: flex; justify-content: space-between; align-items: center; }
+.eq-name { font-size: 30rpx; font-weight: 600; }
+.eq-arrow { color: #ccc; font-size: 28rpx; }
+.eq-body { margin-top: 20rpx; }
+.eq-sec { margin-bottom: 16rpx; }
+.eq-label { font-size: 26rpx; color: #e63b2e; font-weight: 600; margin-bottom: 8rpx; }
+.eq-label.forbid { color: #e63b2e; }
+.eq-text { font-size: 26rpx; color: #555; line-height: 1.6; }

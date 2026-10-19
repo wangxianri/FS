@@ -1,0 +1,81 @@
+.item {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+  min-height: 120rpx;
+  overflow: visible;
+}
+.item:last-child { border-bottom: none; }
+.item-name { font-size: 28rpx; line-height: 1.6; color: #111; font-weight: 500; }
+.item-meta { margin-top: 12rpx; display: flex; align-items: center; flex-wrap: wrap; gap: 8rpx; }
+.item-basis { font-size: 24rpx; color: #555; margin-top: 12rpx; line-height: 1.5; }
+.result-row { display: flex; flex-wrap: wrap; gap: 20rpx; margin-top: 20rpx; }
+.result-btn {
+  flex: 1;
+  min-width: 140rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  background: #fff;
+  color: #333;
+  border: 1rpx solid #bbb;
+  box-sizing: border-box;
+}
+.result-btn text { color: inherit; font-size: 28rpx; font-weight: 500; line-height: 1.2; }
+.result-btn.pass.on { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+.result-btn.pass.on text { color: #fff; }
+.result-btn.fail.on { background: #c62828; color: #fff; border-color: #c62828; }
+.result-btn.fail.on text { color: #fff; }
+.note-input {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  min-height: 72rpx;
+  line-height: 1.5;
+  color: #333;
+  border: 1rpx solid #ddd;
+  padding: 12rpx 16rpx;
+  border-radius: 8rpx;
+  background: #fff;
+}
+.level-row { display: flex; flex-wrap: wrap; gap: 20rpx; margin-bottom: 20rpx; }
+.level-btn {
+  flex: 1;
+  min-width: 140rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72rpx;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  background: #fff;
+  color: #333;
+  border: 1rpx solid #bbb;
+  box-sizing: border-box;
+}
+.level-btn text { color: inherit; font-size: 26rpx; font-weight: 500; line-height: 1.2; }
+.level-btn.on { background: #e63b2e; color: #fff; border-color: #e63b2e; }
+.level-btn.on text { color: #fff; }
+
+/* 底部提交按钮（padding 撑高度 + text-align，绕开 X5 flex/line-height 丢字） */
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96rpx;
+  border-radius: 16rpx;
+  background: #e63b2e;
+  margin-top: 24rpx;
+}
+.submit-btn-text {
+  color: #ffffff;
+  font-size: 34rpx;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.submit-btn.disabled {
+  background: #f0a09a;
+}

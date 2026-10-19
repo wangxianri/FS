@@ -1,0 +1,65 @@
+<view class="page">
+  <view wx:if="{{records.length}}" class="accept-list">
+    <view class="list-item" wx:for="{{records}}" wx:key="id">
+      <view class="accept-info">
+        <view class="list-item-title">{{item.project}}</view>
+        <view class="list-item-sub">{{item.user_name}} · {{item.createdAtText}}</view>
+        <view class="list-item-sub" wx:if="{{item.note}}">{{item.note}}</view>
+      </view>
+      <view class="tag {{item.result === 'pass' ? 'tag-green' : 'tag-red'}}">
+        {{item.result === 'pass' ? txt.resultPass : txt.resultFail}}
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{!records.length && !loading}}" class="empty">
+    <view style="font-size:64rpx;">✅</view>
+    <view style="margin-top:16rpx;">{{txt.noData}}</view>
+  </view>
+
+  <view class="fab" bindtap="openForm">＋</view>
+
+  <view class="mask" wx:if="{{showForm}}" bindtap="closeForm"></view>
+  <view class="sheet" wx:if="{{showForm}}">
+    <view class="sheet-title">{{txt.add}} {{txt.acceptance}}</view>
+    <view class="form-item">
+      <input class="input" placeholder="{{txt.projectName}}" bindinput="onProject" value="{{project}}" />
+    </view>
+
+    <!-- 所属单位/楼宇/场所 -->
+    <view class="form-item">
+      <search-picker options="{{org.units}}" labelKey="name" valueKey="id"
+        placeholder="请选择所属单位" selectedLabel="{{org.units[org.unitIndex] ? org.units[org.unitIndex].name : ''}}"
+        bind:change="onOrgUnit" />
+    </view>
+    <view class="form-item">
+      <search-picker options="{{org.blds}}" labelKey="name" valueKey="id"
+        placeholder="请选择所属楼宇" selectedLabel="{{org.blds[org.bldIndex] ? org.blds[org.bldIndex].name : ''}}"
+        bind:change="onOrgBld" />
+    </view>
+    <view class="form-item">
+      <search-picker options="{{org.plcs}}" labelKey="name" valueKey="id"
+        placeholder="请选择所属场所" selectedLabel="{{org.plcs[org.plcIndex] ? org.plcs[org.plcIndex].name : ''}}"
+        bind:change="onOrgPlc" />
+    </view>
+
+    <!-- 验收要点模板 -->
+    <search-picker options="{{templates}}" labelKey="name" valueKey="name"
+      placeholder="{{txt.acceptPoint}}" selectedLabel="{{tplName}}"
+      bind:change="pickTemplate" />
+    <view class="tpl-points" wx:if="{{tplPoints.length}}">
+      <view class="check-item" wx:for="{{tplPoints}}" wx:key="*this">{{item}}</view>
+    </view>
+
+    <view class="result-row">
+      <view class="result-btn {{result === 'pass' ? 'pass on' : ''}}" data-val="pass" bindtap="onResult">✓ {{txt.resultPass}}</view>
+      <view class="result-btn {{result === 'fail' ? 'fail on' : ''}}" data-val="fail" bindtap="onResult">✗ {{txt.resultFail}}</view>
+    </view>
+    <view class="form-item">
+      <textarea class="textarea" placeholder="{{txt.note}}" bindinput="onNote" value="{{note}}" />
+    </view>
+    <view class="sheet-btns">
+      <view class="btn-ghost" bindtap="closeForm">{{txt.cancel}}</view>
+      <view class="btn-primary" bindtap="onSubmit">{{txt.save}}</view>
+    </view>
+  </view>
+</view>

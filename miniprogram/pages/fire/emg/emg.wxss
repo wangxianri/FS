@@ -1,0 +1,4 @@
+.emg-title { font-size: 32rpx; font-weight: 600; margin-bottom: 20rpx; }
+.step { display: flex; align-items: flex-start; margin-bottom: 16rpx; }
+.step-num { width: 44rpx; height: 44rpx; border-radius: 50%; background: #e63b2e; color: #fff; font-size: 24rpx; display: flex; align-items: center; justify-content: center; margin-right: 16rpx; flex-shrink: 0; }
+.step-text { font-size: 28rpx; color: #555; line-height: 1.5; padding-top: 4rpx; }
